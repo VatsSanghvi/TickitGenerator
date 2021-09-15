@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block css %}{% endblock css %}
+{% block body %}
+    <h1>Tickets</h1>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Ticket No</th>
+                <th scope="col">Start Date/Time</th>             
+                <th scope="col">Created BY</th>
+                <th scope="col">Group</th>
+                <th scope="col">Title</th>
+                <th scope="col">Assigned To</th>
+                <th scope="col">End Date/Time</th>
+                <th scope="col">Status</th>
+                <th scope="col">View</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ticket in tickets %}
+                <tr>
+                    <th scope="row">{{ forloop.counter }}</th>
+                    <td>{{ ticket.start_date_time }}</td>
+                    <td>{{ ticket.created_by.first_name }} {{ ticket.created_by.last_name }}</td>
+                    <td>{{ ticket.group }}</td>
+                    <td>{{ ticket.title }}</td>
+                    <td>{{ ticket.assigned_to }}</td>
+                    <td>{{ ticket.end_date_time }}</td>
+                    <td>{{ ticket.status }}</td>
+                    <td><a href={% url 'ticket_detail' ticket.id %}>View</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% if request.user.role == "Viewer" %}
+        <a class="btn btn-primary" href="{% url 'ticket_create' %}">Add Tickets</a>
+    {% endif %}
+{% endblock body %}

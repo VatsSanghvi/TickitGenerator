@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Home{% endblock %}
+{% block body %}
+    <h1>Welcome {{ request.user.first_name | capfirst }}!</h1>
+{% endblock body %}

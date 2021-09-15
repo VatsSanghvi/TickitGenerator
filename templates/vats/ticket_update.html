@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{%load crispy_forms_tags %} 
+{% block body %}
+<form method="POST">
+    <h1>Ticket Update</h1>
+    {% csrf_token %}
+    {{form|crispy}}
+    <input type='submit' class="btn btn-primary" value="Update">
+    {% if request.user.role == "Admin" %}
+        <a class="btn btn-danger" href="{% url 'ticket_delete'  form.instance.id  %}">Delete</a>
+    {% endif %}
+</form>
+{% endblock body %}

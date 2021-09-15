@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}
+    {% if not form.instance.pk %}
+        Create User
+    {% else %}
+        Update User
+    {% endif %}
+{% endblock title %}
+{% block body %}
+<h1>
+    {% if not form.instance.pk %}
+        Create User
+    {% elif form.instance.pk == request.user.pk %}
+        Update Profile
+    {% else %}
+        Update User: {{form.instance.first_name}} {{ form.instance.last_name }}
+    {% endif %}
+</h1>
+<form method="POST">
+    {% csrf_token %}
+    {{ form | crispy }}
+    <input class="btn btn-primary" type="submit" value="Submit">
+<form>
+{% endblock body %}

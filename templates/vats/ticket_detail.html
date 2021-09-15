@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %}{{user_details.first_name}}{% endblock title %}
+{% block css %}{% endblock css %}
+{% block body %}
+  <h1>Ticket Details</h1>
+  <p><b>Start Date/Time</b><br> {{ ticket.start_date_time }}</p>
+  <p><b>Group</b><br>{{ ticket.group }}</p>
+  <p><b>Title</b><br>{{ ticket.group }}</p>
+  <p><b>Description</b><br>{{ ticket.problem_descp }}</p>
+  <p><b>Status</b><br>{{ ticket.status }}</p>
+  <a type='submit'href={% url 'ticket_update' ticket.id %} class="btn btn-primary" value"submit">Update</a>
+
+{% endblock body %}
+{% block js %}{% endblock js %}

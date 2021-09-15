@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}{{user_details.first_name}}{% endblock title %}
+{% block css %}{% endblock css %}
+{% block body %}
+  <h1>
+    {% if user_details.pk == request.user.pk %}
+      Profile
+    {% else %}
+      User Details
+    {% endif %}
+  </h1>
+  <p><b>Name</b><br>{{user_details.first_name|capfirst}} {{user_details.last_name|capfirst}}</p>
+  <p><b>Email</b><br>{{user_details.email}}</p>
+  <p><b>Role</b><br>{{user_details.role}}</p>
+  {% if user_details.pk == request.user.pk %}
+    <a class="btn btn-primary" href="{% url 'profile_update' user_details.pk %}">Update</a>
+  {% else %}
+    <a class="btn btn-primary" href="{% url 'user_update' user_details.pk %}">Update</a>
+  {% endif %}
+  {% if user_details.pk == request.user.pk %}<a href="{% url 'password_change' %}">Change Password</a>{% endif %}
+{% endblock body %}
+{% block js %}{% endblock js %}
+

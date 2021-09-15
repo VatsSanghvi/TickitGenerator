@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %}Users{% endblock title %}
+{% block css %}{% endblock css %}
+{% block body %}
+  <h1>Users</h1>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Name</th>
+        <th scope="col">Email</th>
+        <th scope="col">Role</th>
+        <th scope="col">View</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user_detail in user_list %}
+        <tr>
+          <th scope="row">{{forloop.counter}}</th>
+          <td>{{user_detail.first_name|capfirst}} {{user_detail.last_name|capfirst}}</td>
+          <td>{{user_detail.email}}</td>
+          <td>{{user_detail.role}}</td>
+          <td><a href="{% url 'user_detail' user_detail.pk %}">View</a></td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="4">No users available</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <a class="btn btn-primary" href="{% url 'user_create' %}">Create User</a>
+{% endblock body %}
+{% block js %}{% endblock js %}
