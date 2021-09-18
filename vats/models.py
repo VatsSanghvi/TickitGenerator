@@ -20,7 +20,7 @@ class Ticket(models.Model):
     
     status_choice = (
         ("Cancelled","Cancelled"),
-        ("Assigned","Assigned"),
+        ("In Progress","In Progress"),
         ("Pending","Pending"),
         ("Completed","Completed"),
     )
