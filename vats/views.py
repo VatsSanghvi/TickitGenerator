@@ -50,7 +50,7 @@ def ticket_list(request):
 
 def ticket_detail(request, id):
     ticket = Ticket.objects.get(id=id)
-    if ticket.created_by == request.user or request.user.role == "Admin":
+    if ticket.created_by == request.user or request.user.role == "Admin" or ticket.assigned_to == request.user  :
         context = {}
         context['ticket'] = ticket
         return render(request, 'vats/ticket_detail.html', context)

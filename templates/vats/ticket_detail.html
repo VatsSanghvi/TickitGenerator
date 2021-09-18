@@ -8,7 +8,10 @@
   <p><b>Title</b><br>{{ ticket.group }}</p>
   <p><b>Description</b><br>{{ ticket.problem_descp }}</p>
   <p><b>Status</b><br>{{ ticket.status }}</p>
+  {% if request.user.role == "Viewer" %}
+  {% else %}  
   <a type='submit'href={% url 'ticket_update' ticket.id %} class="btn btn-primary" value"submit">Update</a>
 
+  {% endif %}
 {% endblock body %}
 {% block js %}{% endblock js %}
