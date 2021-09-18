@@ -19,9 +19,10 @@ class Category(models.Model):
 class Ticket(models.Model):
     
     status_choice = (
-        ("Closed","Closed"),
+        ("Cancelled","Cancelled"),
         ("Assigned","Assigned"),
-        ("Pending","Pending")
+        ("Pending","Pending"),
+        ("Completed","Completed"),
     )
     group = models.ForeignKey("vats.Category",on_delete=models.SET_NULL,blank=True,null=True)
     title = models.CharField(_("Title"), max_length=50)
