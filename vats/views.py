@@ -46,6 +46,19 @@ def ticket_list(request):
         context['tickets'] = Ticket.objects.filter(assigned_to=request.user)
 
     return render(request, 'vats/ticket_list.html', context)
+    
+
+def ticket_list_status(request,status):
+    context = {}
+    if request.user.role == "Admin":
+        context['tickets'] = Ticket.objects.filter(status=status)
+    elif request.user.role == "Viewer":
+        context['tickets'] = Ticket.objects.filter(created_by = request.user , status=status)
+    else :
+        request.user.role == "Manager"
+        context['tickets'] = Ticket.objects.filter(assigned_to=request.user,status=status)
+
+    return render(request, 'vats/ticket_list.html', context)
 
 
 def ticket_detail(request, id):
@@ -70,7 +83,12 @@ def ticket_update(request, id):
     if request.method == 'POST':
         form = TicketUpdateForm(request.POST, instance=ticket)
         if form.is_valid():
-            form.save()
+            ticket = form.save()
+            if ticket.assigned_to != None:
+                ticket.status = 'In Progress'
+            else:
+                ticket.status = 'Pending'
+            ticket.save()
             return redirect('ticket_list')
     
     context = {}

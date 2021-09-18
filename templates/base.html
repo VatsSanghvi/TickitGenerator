@@ -21,9 +21,11 @@
               Tickets
             </a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="#">Action</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <a class="dropdown-item" href="#">Something else here</a>
+              <a class="dropdown-item" href="{% url 'ticket_list' %}">All</a>
+              <a class="dropdown-item" href="{% url 'ticket_list_status' 'Pending' %}">Pending</a>
+              <a class="dropdown-item" href="{% url 'ticket_list_status' 'In Progress' %}">In Progress</a>
+              <a class="dropdown-item" href="{% url 'ticket_list_status' 'Completed' %}">Completed</a>
+              <a class="dropdown-item" href="{% url 'ticket_list_status' 'Cancelled' %}">Cancelled</a>
             </div>
           </li>
           <li class="nav-item"><a class="nav-link" href="{% url 'category_list' %}">Categories</a></li>
