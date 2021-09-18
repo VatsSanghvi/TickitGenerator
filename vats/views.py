@@ -72,7 +72,7 @@ def ticket_detail(request, id):
         messages.warning(request, 'You are not allowed to access this page.')
         return redirect('home')
 
-@viewernotallowed
+@admin_required
 def ticket_update(request, id):
 
     ticket = Ticket.objects.get(id=id)
@@ -133,3 +133,14 @@ def category_list(request):
     return render(request, 'vats/category_list.html', context)
 
 
+def ticket_completed(request,id):
+    ticket = Ticket.objects.get(id=id)
+    ticket.status = "Completed"
+    ticket.save()
+    return redirect('ticket_detail',id)
+
+def ticket_cancelled(request,id):
+    ticket = Ticket.objects.get(id=id)
+    ticket.status = "Cancelled"
+    ticket.save()
+    return redirect('ticket_detail',id)

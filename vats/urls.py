@@ -13,4 +13,7 @@ urlpatterns = [
     path('ticket_detail/<int:id>', views.ticket_detail, name='ticket_detail'),
     path('category_create/', views.category_create, name='category_create'),
     path('category_list/', views.category_list, name='category_list'),
+    path('ticket_completed/<int:id>', views.ticket_completed, name='ticket_completed'),
+    path('ticket_cancelled/<int:id>', views.ticket_cancelled, name='ticket_cancelled'),
+
 ]
