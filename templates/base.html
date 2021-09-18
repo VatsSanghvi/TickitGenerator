@@ -23,6 +23,7 @@
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
               <a class="dropdown-item" href="{% url 'ticket_list' %}">All</a>
               <a class="dropdown-item" href="{% url 'ticket_list_status' 'Pending' %}">Pending</a>
+              <a class="dropdown-item" href="{% url 'ticket_list_status' 'Assigned' %}">Assigned</a>
               <a class="dropdown-item" href="{% url 'ticket_list_status' 'In Progress' %}">In Progress</a>
               <a class="dropdown-item" href="{% url 'ticket_list_status' 'Completed' %}">Completed</a>
               <a class="dropdown-item" href="{% url 'ticket_list_status' 'Cancelled' %}">Cancelled</a>
@@ -30,9 +31,31 @@
           </li>
           <li class="nav-item"><a class="nav-link" href="{% url 'category_list' %}">Categories</a></li>
         {% elif request.user.role == "Viewer" %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'ticket_list' %}">My Tickets</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              My Tickets
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="{% url 'ticket_list' %}">All</a>
+              <a class="dropdown-item" href="{% url 'ticket_list_status' 'Pending' %}">Pending</a>
+              <a class="dropdown-item" href="{% url 'ticket_list_status' 'In Progress' %}">In Progress</a>
+              <a class="dropdown-item" href="{% url 'ticket_list_status' 'Completed' %}">Completed</a>
+            </div>
+          </li>
         {%  elif  request.user.role == "Manager" %}
-          <li class="nav-item"><a class="nav-link" href="{% url 'ticket_list' %}">Assigned Tickets</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Assigned Tickets
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="{% url 'ticket_list' %}">All</a>
+              <a class="dropdown-item" href="{% url 'ticket_list_status' 'Pending' %}">Pending</a>
+              <a class="dropdown-item" href="{% url 'ticket_list_status' 'Assigned' %}">Assigned</a>
+              <a class="dropdown-item" href="{% url 'ticket_list_status' 'In Progress' %}">In Progress</a>
+              <a class="dropdown-item" href="{% url 'ticket_list_status' 'Completed' %}">Completed</a>
+              <a class="dropdown-item" href="{% url 'ticket_list_status' 'Cancelled' %}">Cancelled</a>
+            </div>
+          </li>
         {% endif %}
       </ul>
 

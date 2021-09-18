@@ -1,5 +1,5 @@
 from django import forms
-from .models import Ticket,Category
+from .models import Ticket,Category,WorkNotes
 
 
 
@@ -21,3 +21,9 @@ class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
         fields = ("name",)
+
+class WorkNotesForm(forms.ModelForm):
+    
+    class Meta:
+        model = WorkNotes
+        fields = ("ticket","comments")

@@ -85,7 +85,7 @@ def ticket_update(request, id):
         if form.is_valid():
             ticket = form.save()
             if ticket.assigned_to != None:
-                ticket.status = 'In Progress'
+                ticket.status = 'Assigned'
             else:
                 ticket.status = 'Pending'
             ticket.save()
@@ -131,3 +131,5 @@ def category_list(request):
     context = {}
     context['categories'] = Category.objects.all()
     return render(request, 'vats/category_list.html', context)
+
+
