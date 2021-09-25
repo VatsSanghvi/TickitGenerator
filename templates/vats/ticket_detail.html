@@ -11,10 +11,11 @@
   {% if ticket.status != 'Pending' %}
   <p><b>Assigned To</b><br>{{ ticket.assigned_to.first_name }} {{ ticket.assigned_to.last_name }}</p>
   {% endif %}
-  {% if request.user.role == "Viewer" %}
-  {% else %}  
-  <a type='submit'href={% url 'ticket_update' ticket.id %} class="btn btn-primary" value"submit">Update</a>
-
+  {% if request.user.role == "Admin" %}
+    <a href={% url 'ticket_update' ticket.id %} class="btn btn-primary">Update</a>
+  {% elif request.user.role == "Manager" and ticket.is_open %}
+    <a href={% url 'ticket_completed' ticket.id %} class="btn btn-primary">Complete</a>
+    <a href={% url 'ticket_cancelled' ticket.id %} class="btn btn-primary">Cancel</a>
   {% endif %}
 {% endblock body %}
 {% block js %}{% endblock js %}

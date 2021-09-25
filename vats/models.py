@@ -37,6 +37,11 @@ class Ticket(models.Model):
 
     def __str__(self):
         return self.title
+    
+    def is_open(self):
+        if self.status == 'Completed' or self.status == 'Cancelled':
+            return False
+        return True
 
 class WorkNotes(models.Model):
 
@@ -50,7 +55,7 @@ class WorkNotes(models.Model):
         verbose_name_plural = _("WorkNotess")
 
     def __str__(self):
-        return self.name
+        return str(self.ticket.created_by) + " - " + self.comments
 
     def get_absolute_url(self):
         return reverse("WorkNotes_detail", kwargs={"pk": self.pk})
