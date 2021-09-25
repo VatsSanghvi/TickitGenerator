@@ -1,12 +1,6 @@
 from django.db import models
-from django.db.models import Q
-from django.db.models.base import Model
-from django.db.models.fields import DateTimeField
-from django.db.models.fields.related import ForeignKey
 from django.utils.translation import gettext as _
-from django.utils import timezone
-
-
+from django.urls import reverse
 
 class Category(models.Model):
 
@@ -41,18 +35,16 @@ class Ticket(models.Model):
         verbose_name = _("Ticket")
         verbose_name_plural = _("Tickets")
 
-
     def __str__(self):
         return self.title
 
-
 class WorkNotes(models.Model):
+
     ticket = models.ForeignKey("vats.Ticket", on_delete=models.CASCADE)
     comments = models.TextField(_("Comments"))
     commented_by = models.ForeignKey("registration.User", on_delete=models.CASCADE)
     created_at = models.DateTimeField(_("Created At"), auto_now_add=True)
     
-
     class Meta:
         verbose_name = _("WorkNotes")
         verbose_name_plural = _("WorkNotess")

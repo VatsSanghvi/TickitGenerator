@@ -4,7 +4,6 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils import timezone
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-# from django.views.generic.detail import T
 
 class UserManager(BaseUserManager):
     """
