@@ -7,6 +7,10 @@
   <p><b>Group</b><br>{{ ticket.group }}</p>
   <p><b>Title</b><br>{{ ticket.group }}</p>
   <p><b>Description</b><br>{{ ticket.problem_descp }}</p>
+  {% if request.user.role == "Admin" %}
+  <p><b>Created By </b><br>{{ ticket.created_by }}</p>
+  {% endif %}
+  
   <p><b>Status</b><br>{{ ticket.status }}</p>
   {% if ticket.status != 'Pending' %}
   <p><b>Assigned To</b><br>{{ ticket.assigned_to.first_name }} {{ ticket.assigned_to.last_name }}</p>

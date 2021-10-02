@@ -11,6 +11,7 @@
                 <th scope="col">Group</th>
                 <th scope="col">Title</th>
                 <th scope="col">Assigned To</th>
+                <th scope="col">Priority</th>
                 <th scope="col">End Date/Time</th>
                 <th scope="col">Status</th>
                 <th scope="col">View</th>
@@ -25,6 +26,7 @@
                     <td>{{ ticket.group }}</td>
                     <td>{{ ticket.title }}</td>
                     <td>{{ ticket.assigned_to }}</td>
+                    <td>{{ ticket.priority }}</td>
                     <td>{{ ticket.end_date_time }}</td>
                     <td>{{ ticket.status }}</td>
                     <td><a href={% url 'ticket_detail' ticket.id %}>View</a></td>

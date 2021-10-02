@@ -13,7 +13,7 @@ class TicketUpdateForm(forms.ModelForm):
     
     class Meta:
         model = Ticket
-        fields = ("group", "title","problem_descp","assigned_to")
+        fields = ("group", "title","problem_descp","assigned_to","priority")
 
 
 class CategoryForm(forms.ModelForm):

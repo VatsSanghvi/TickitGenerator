@@ -28,10 +28,16 @@ class Ticket(models.Model):
         ("Pending","Pending"),
         ("Completed","Completed"),
     )
+    priority_choice = (
+        ("High","High"),
+        ("Moderate","Moderate"),
+        ("Low","Low"),
+    )
     group = models.ForeignKey("vats.Category",on_delete=models.SET_NULL,blank=True,null=True)
-    title = models.CharField(_("Title"), max_length=50)
+    title = models.CharField(_("Title"), max_length=50,)
     problem_descp = models.TextField(_("Problem Description"), max_length=500)
     created_by = models.ForeignKey("registration.User", related_name=_("Issues"), on_delete=models.CASCADE)
+    priority = models.CharField(_("Priority"), max_length=50,null=True,blank=True,choices=priority_choice)
     start_date_time = models.DateTimeField(_("Start Date Time"), auto_now_add=True)
     end_date_time = models.DateTimeField(_("End Date Time"), null=True, blank=True)
     assigned_to = models.ForeignKey("registration.User",related_name=_("Tasks"), on_delete=models.SET_NULL,null=True,blank=True)

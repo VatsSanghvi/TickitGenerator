@@ -9,6 +9,7 @@
         <th scope="col">#</th>
         <th scope="col">Name</th>
         <th scope="col">Email</th>
+        <th scope="col">Phone Number</th>
         <th scope="col">Role</th>
         <th scope="col">View</th>
       </tr>
@@ -19,6 +20,7 @@
           <th scope="row">{{forloop.counter}}</th>
           <td>{{user_detail.first_name|capfirst}} {{user_detail.last_name|capfirst}}</td>
           <td>{{user_detail.email}}</td>
+          <td>{{user_detail.phonenumber}}</td>
           <td>{{user_detail.role}}</td>
           <td><a href="{% url 'user_detail' user_detail.pk %}">View</a></td>
         </tr>
