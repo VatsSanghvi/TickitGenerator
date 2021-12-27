@@ -61,7 +61,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff        = models.BooleanField(_('Staff'), default=False)
     date_joined     = models.DateTimeField(_('Date Joined'), default=timezone.now)
     role = models.CharField(_("Role"), max_length=50,choices=role_choice,null=True,blank=True)
-    #Add Phone NUmber
+    
 
 
     USERNAME_FIELD = 'email'

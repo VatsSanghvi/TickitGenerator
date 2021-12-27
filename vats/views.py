@@ -1,7 +1,10 @@
 from django.shortcuts import redirect, render
-from .models import  Ticket,Category
-from .forms import TicketForm,CategoryForm, TicketUpdateForm
+from .models import  Ticket,Category,Subcategory
+from .forms import TicketForm,CategoryForm, TicketUpdateForm,SubcategoryForm
 from registration.models import User
+from django.conf import settings
+from django.core.mail import send_mail
+
 
 from registration.decorators import manager_required, viewer_required, admin_required, viewernotallowed
 from django.contrib import messages
@@ -28,9 +31,16 @@ def custom_create(request, custom_form, render_page, redirect_url):
 
 @viewer_required
 def ticket_create(request):
+    # send_mail(
+    #     'Your Ticket has been generated',#subject
+    #     ,#message
+    #     ,#from email
+    #     [user.email],#to email
+    # )
     return custom_create(
         request = request, 
         custom_form = TicketForm, 
+        
         render_page = 'vats/ticket_create.html', 
         redirect_url = 'ticket_list'
     )
@@ -140,7 +150,37 @@ def ticket_completed(request,id):
     return redirect('ticket_detail',id)
 
 def ticket_cancelled(request,id):
+    
     ticket = Ticket.objects.get(id=id)
     ticket.status = "Cancelled"
     ticket.save()
     return redirect('ticket_detail',id)
+
+
+def custom_subcategory_create(request, custom_form, render_page, redirect_url):
+    context = {}
+    form = custom_form()
+
+    if request.method == "POST":
+        form = custom_form(request.POST)
+        if form.is_valid():
+            form.save()                     
+            messages.success(request, 'Your Category has been created successfully.')
+            return redirect(redirect_url)
+
+    context['form'] = form
+    return render(request, render_page, context)
+
+@admin_required
+def subcategory_create(request):
+    return custom_subcategory_create(
+        request = request, 
+        custom_form = SubcategoryForm, 
+        render_page = 'vats/subcategory_create.html', 
+        redirect_url = 'subcategory_list'
+    )
+@admin_required
+def subcategory_list(request):
+    context = {}
+    context['categories'] = Subcategory.objects.all()
+    return render(request, 'vats/subcategory_list.html', context)

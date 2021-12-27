@@ -19,6 +19,22 @@ class Category(models.Model):
     def __str__(self):
         return self.name  
 
+
+class Subcategory(models.Model):
+
+    Category = models.ForeignKey("vats.Category", on_delete=models.SET_NULL,blank=True,null=True)
+    name = models.CharField(_("Subcategory"), max_length=50)
+
+    class Meta:
+        verbose_name = _("Subcategory")
+        verbose_name_plural = _("Subcategorys")
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse("Subcategory_detail", kwargs={"pk": self.pk})
+
 class Ticket(models.Model):
     
     status_choice = (
@@ -33,7 +49,8 @@ class Ticket(models.Model):
         ("Moderate","Moderate"),
         ("Low","Low"),
     )
-    group = models.ForeignKey("vats.Category",on_delete=models.SET_NULL,blank=True,null=True)
+    Category = models.ForeignKey("vats.Category",on_delete=models.SET_NULL,blank=True,null=True)
+    Subcategory = models.ForeignKey("vats.Subcategory",on_delete=models.SET_NULL,blank=True,null=True)
     title = models.CharField(_("Title"), max_length=50,)
     problem_descp = models.TextField(_("Problem Description"), max_length=500)
     created_by = models.ForeignKey("registration.User", related_name=_("Issues"), on_delete=models.CASCADE)

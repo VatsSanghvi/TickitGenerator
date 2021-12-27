@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block css %}{% endblock css %}
+{% block body %}
+    <h1>SubCategories</h1>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">SubCategory No</th>
+                <th scope="col">SubCategories Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for subcategory in subcategories %}
+                <tr>
+                    <td scope="row">{{ forloop.counter }}</td>
+                    <td scope="row">{{ subcategory.name }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>  
+    <a class="btn btn-primary" href="{% url 'subcategory_create' %}">Add SubCategory</a>   
+{% endblock body %}
