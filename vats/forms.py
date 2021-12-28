@@ -7,13 +7,13 @@ class TicketForm(forms.ModelForm):
     
     class Meta:
         model = Ticket
-        fields = ("Category", "title","problem_descp")
+        fields = ("category", "title","problem_descp")
 
 class TicketUpdateForm(forms.ModelForm):
     
     class Meta:
         model = Ticket
-        fields = ("Category", "title","problem_descp","assigned_to","priority")
+        fields = ("category", "title","problem_descp","assigned_to","priority")
 
 
 class CategoryForm(forms.ModelForm):

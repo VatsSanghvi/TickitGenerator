@@ -43,8 +43,8 @@ class Ticket(models.Model):
         ("Moderate","Moderate"),
         ("Low","Low"),
     )
-    Category = models.ForeignKey("vats.Category",on_delete=models.SET_NULL,blank=True,null=True)
-    Subcategory = models.ForeignKey("vats.Subcategory",on_delete=models.SET_NULL,blank=True,null=True)
+    category = models.ForeignKey("vats.Category",on_delete=models.SET_NULL,blank=True,null=True)
+    subcategory = models.ForeignKey("vats.Subcategory",on_delete=models.SET_NULL,blank=True,null=True)
     title = models.CharField(_("Title"), max_length=50,)
     problem_descp = models.TextField(_("Problem Description"), max_length=500)
     created_by = models.ForeignKey("registration.User", related_name=_("Issues"), on_delete=models.CASCADE)

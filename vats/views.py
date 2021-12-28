@@ -23,6 +23,20 @@ def custom_create(request, custom_form, render_page, redirect_url):
             ticket.status = "Pending"
             ticket.save()
             messages.success(request, 'Your tickit has been created successfully.')
+            
+            send_mail(
+                'Your Ticket has been generated and its waiting for admins approval',#subject
+                'Ticket Details :- ' +
+                'Category' + str(ticket.category) +
+                'Subcategory' + str(ticket.subcategory) + 
+                'Title' + str(ticket.title) + 
+                'Problem Description' + str(ticket.problem_descp) + 
+                'Created by' + str(ticket.created_by) + 
+                'Start Date Time' + str(ticket.start_date_time) ,#message
+                settings.EMAIL_HOST_USER,#from email
+                [User.email],#To email
+            )
+        
             return redirect(redirect_url)
 
     context['form'] = form
@@ -31,12 +45,7 @@ def custom_create(request, custom_form, render_page, redirect_url):
 
 @viewer_required
 def ticket_create(request):
-    # send_mail(
-    #     'Your Ticket has been generated',#subject
-    #     ,#message
-    #     ,#from email
-    #     [user.email],#to email
-    # )
+    
     return custom_create(
         request = request, 
         custom_form = TicketForm, 
