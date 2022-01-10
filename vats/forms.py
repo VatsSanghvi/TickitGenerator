@@ -4,10 +4,11 @@ from .models import Ticket,Category,WorkNotes,Subcategory
 
 
 class TicketForm(forms.ModelForm):
+    # subcategory = forms.ModelChoiceField(queryset=Subcategory.objects.filter(category__id = self.fields['category']))
     
     class Meta:
         model = Ticket
-        fields = ("category", "title","problem_descp")
+        fields = ("category", "subcategory", "title","problem_descp")
 
 class TicketUpdateForm(forms.ModelForm):
     
@@ -26,7 +27,7 @@ class SubcategoryForm(forms.ModelForm):
     
     class Meta:
         model = Subcategory
-        fields = ("name",)
+        fields = ("category", "name")
 
 class WorkNotesForm(forms.ModelForm):
     

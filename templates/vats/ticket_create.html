@@ -6,5 +6,33 @@
     {% csrf_token %}
     {{form|crispy}}
     <input type='submit' class="btn btn-primary" value="Submit">
-</form>
+{% comment %} </form>
+<script>
+    $("#id_category").change(function(){
+        alert("The text has been changed.");
+    });
+    var $r_ = function() {
+        var url = $("#productForm").attr("data-products-url");
+        var categoryId = $(this).val();
+        var toRemove = $(this).nextAll('select');
+        $.ajax({                       
+          url: url,                    
+          data: {
+            'category': categoryId
+          },
+          success: function (data) {
+            if (data != 'leaf_node') {
+              toRemove.remove();
+              console.log(toRemove);
+              $("#productForm").append(data);
+            }
+            else {
+              toRemove.remove();
+            }
+          }
+        });
+
+    } //end of $r_
+    $(document).on('change', 'select', $r_);
+</script> {% endcomment %}
 {% endblock body %}

@@ -61,7 +61,7 @@
       </ul>
 
     </div>
-    <a class="nav-link" href="{% url 'profile' request.user.pk %}">Profile</a>
+    <a class="nav-link" href="{% url 'profile' request.user.id %}">Profile</a>
     <a class="nav-link" href="{% url 'logout' %}">Logout</a>
   </nav>
   {% endif %}

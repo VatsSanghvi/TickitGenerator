@@ -13,7 +13,7 @@ from .forms import CustomUserCreationForm
 # DECORATORS
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-from .decorators import admin_required
+from .decorators import admin_required, my_user_details
 
 @login_required
 def home(request):
@@ -21,11 +21,12 @@ def home(request):
     return render(request, 'registration/home.html', context)
 
 # USER CBV
-
+@method_decorator(login_required, name='dispatch')
 @method_decorator(admin_required, name='dispatch')
 class UserListView(LoginRequiredMixin, ListView):
     model = User
 
+@method_decorator(my_user_details, name='dispatch')
 class UserDetailView(LoginRequiredMixin, DetailView):
     model = User
     context_object_name = 'user_details'

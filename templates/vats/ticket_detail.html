@@ -3,23 +3,36 @@
 {% block css %}{% endblock css %}
 {% block body %}
   <h1>Ticket Details</h1>
-  <p><b>Start Date/Time</b><br> {{ ticket.start_date_time }}</p>
-  <p><b>Group</b><br>{{ ticket.group }}</p>
-  <p><b>Title</b><br>{{ ticket.group }}</p>
+  <p><b>Created Date</b><br> {{ ticket.start_date_time }}</p>
+  <p><b>Category</b><br>{{ ticket.category }}</p>
+  <p><b>Sub category</b><br>{{ ticket.subcategory }}</p>
+  <p><b>Title</b><br>{{ ticket.title }}</p>
   <p><b>Description</b><br>{{ ticket.problem_descp }}</p>
-  {% if request.user.role == "Admin" %}
-  <p><b>Created By </b><br>{{ ticket.created_by }}</p>
+  <p><b>Priority</b><br>{{ ticket.priority }}</p>
+  <p><b>Status</b><br>{{ ticket.status }}</p>
+  
+  
+  {% if request.user.role != "Viewer" %}
+  <p><b>Created By</b><br>{{ ticket.created_by }}</p>
   {% endif %}
   
-  <p><b>Status</b><br>{{ ticket.status }}</p>
-  {% if ticket.status != 'Pending' %}
+  {% if ticket.assigned_to %}
   <p><b>Assigned To</b><br>{{ ticket.assigned_to.first_name }} {{ ticket.assigned_to.last_name }}</p>
   {% endif %}
+  
+  {% if ticket.end_date_time %}
+  <p><b>End date</b><br>{{ ticket.end_date_time }}</p>
+  {% endif %}
+
   {% if request.user.role == "Admin" %}
     <a href={% url 'ticket_update' ticket.id %} class="btn btn-primary">Update</a>
   {% elif request.user.role == "Manager" and ticket.is_open %}
-    <a href={% url 'ticket_completed' ticket.id %} class="btn btn-primary">Complete</a>
-    <a href={% url 'ticket_cancelled' ticket.id %} class="btn btn-primary">Cancel</a>
+  <a href={% url 'ticket_update' ticket.id %} class="btn btn-primary">Update</a>
+
+  {% if request.user.role != "Admin" %}
+    <a href={% url 'ticket_cancel' ticket.id %} class="btn btn-warning">Cancel request</a>
+  {% endif %}
+    
   {% endif %}
 {% endblock body %}
 {% block js %}{% endblock js %}

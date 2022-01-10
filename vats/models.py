@@ -16,7 +16,7 @@ class Category(models.Model):
 
 class Subcategory(models.Model):
 
-    Category = models.ForeignKey("vats.Category", on_delete=models.SET_NULL,blank=True,null=True)
+    category = models.ForeignKey("vats.Category", on_delete=models.SET_NULL,blank=True,null=True)
     name = models.CharField(_("Subcategory"), max_length=50)
 
     class Meta:
@@ -27,17 +27,29 @@ class Subcategory(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse("Subcategory_detail", kwargs={"pk": self.pk})
+        return reverse("Subcategory_detail", kwargs={"id": self.id})
 
 class Ticket(models.Model):
-    
+    # Approve with assignment and priority, Reject with comment
+    # ticket.assigned_to.id == request.user.id
+    # ticket.created_by.id == request.user.id
     status_choice = (
-        ("Cancelled","Cancelled"),
-        ("Assigned","Assigned"),
-        ("In Progress","In Progress"),
-        ("Pending","Pending"),
+        ("Approval","Approval"),                # Admin     => Approve, Reject
+        ("Assigned","Assigned"),                # Assigned to Manager, Created by Viewer   => Cancel ticket
+        ("Scoping","Scoping"),                  # Assigned to Manager, Created by Viewer   => Cancel ticket
+        ("In Progress","In Progress"),          # Assigned to Manager, Created by Viewer   => Cancel ticket
         ("Completed","Completed"),
+        ("Cancelled","Cancelled"),
+        ("Rejected", "Rejected")
     )
+    
+    # Approve           => admin                                    => from approval to assigned stage
+    # Reject            => admin                                    => from approval to Rejected stage
+    # Scoping           => Assigned to manager                      => from assigned to Scoping stage
+    # In Progress       => Assigned to manager                      => from scoping to in progress stage
+    # Completed         => Assigned to manager                      => from in progress to completed stage
+    # Cancel Ticket     => Assigned to manager, Created by Viewer   => from (Assigned, Scoping, In progress) to Cancelled stage
+    
     priority_choice = (
         ("High","High"),
         ("Moderate","Moderate"),
@@ -52,7 +64,7 @@ class Ticket(models.Model):
     start_date_time = models.DateTimeField(_("Start Date Time"), auto_now_add=True)
     end_date_time = models.DateTimeField(_("End Date Time"), null=True, blank=True)
     assigned_to = models.ForeignKey("registration.User",related_name=_("Tasks"), on_delete=models.SET_NULL,null=True,blank=True)
-    status = models.CharField(_("Status"), max_length=50,choices=status_choice)
+    status = models.CharField(_("Status"), max_length=50,choices=status_choice,null=True,blank=True)
    
     class Meta:
         verbose_name = _("Ticket")
@@ -81,6 +93,6 @@ class WorkNotes(models.Model):
         return str(self.ticket.created_by) + " - " + self.comments
 
     def get_absolute_url(self):
-        return reverse("WorkNotes_detail", kwargs={"pk": self.pk})
+        return reverse("WorkNotes_detail", kwargs={"id": self.id})
 
 

@@ -3,10 +3,12 @@ from .models import  Ticket,Category,Subcategory
 from .forms import TicketForm,CategoryForm, TicketUpdateForm,SubcategoryForm
 from registration.models import User
 from django.conf import settings
-from django.core.mail import send_mail
+from django.core.mail import send_mail, EmailMessage
+from django.template.loader import render_to_string
+from tickit import settings
 
-
-from registration.decorators import manager_required, viewer_required, admin_required, viewernotallowed
+from registration.decorators import logout_required, manager_required, viewer_required, admin_required, viewernotallowed
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ( DetailView )
@@ -23,26 +25,22 @@ def custom_create(request, custom_form, render_page, redirect_url):
             ticket.status = "Pending"
             ticket.save()
             messages.success(request, 'Your tickit has been created successfully.')
+            print("reached here")
             
-            send_mail(
-                'Your Ticket has been generated and its waiting for admins approval',#subject
-                'Ticket Details :- ' +
-                'Category' + str(ticket.category) +
-                'Subcategory' + str(ticket.subcategory) + 
-                'Title' + str(ticket.title) + 
-                'Problem Description' + str(ticket.problem_descp) + 
-                'Created by' + str(ticket.created_by) + 
-                'Start Date Time' + str(ticket.start_date_time) ,#message
-                settings.EMAIL_HOST_USER,#from email
-                [User.email],#To email
-            )
+            html_message = render_to_string('vats/email_template.html', {'context': ticket})
+            message = EmailMessage("Subject", html_message, settings.EMAIL_HOST_USER, [request.user.email])
+            message.content_subtype = 'html'
+            try:
+                message.send()
+            except Exception as e:
+                print("Error",e)
         
             return redirect(redirect_url)
 
     context['form'] = form
     return render(request, render_page, context)
 
-
+@login_required
 @viewer_required
 def ticket_create(request):
     
@@ -54,6 +52,7 @@ def ticket_create(request):
         redirect_url = 'ticket_list'
     )
 
+@login_required
 def ticket_list(request):
     context = {}
     if request.user.role == "Admin":
@@ -66,7 +65,7 @@ def ticket_list(request):
 
     return render(request, 'vats/ticket_list.html', context)
     
-
+@login_required
 def ticket_list_status(request,status):
     context = {}
     if request.user.role == "Admin":
@@ -79,7 +78,7 @@ def ticket_list_status(request,status):
 
     return render(request, 'vats/ticket_list.html', context)
 
-
+@login_required
 def ticket_detail(request, id):
     ticket = Ticket.objects.get(id=id)
     if ticket.created_by == request.user or request.user.role == "Admin" or ticket.assigned_to == request.user  :
@@ -91,7 +90,8 @@ def ticket_detail(request, id):
         messages.warning(request, 'You are not allowed to access this page.')
         return redirect('home')
 
-@admin_required
+@login_required
+@viewernotallowed
 def ticket_update(request, id):
 
     ticket = Ticket.objects.get(id=id)
@@ -106,7 +106,8 @@ def ticket_update(request, id):
             if ticket.assigned_to != None:
                 ticket.status = 'Assigned'
             else:
-                ticket.status = 'Pending'
+                ticket.status = 'Approval'
+
             ticket.save()
             return redirect('ticket_list')
     
@@ -114,6 +115,7 @@ def ticket_update(request, id):
     context['form'] = form
     return render(request, "vats/ticket_update.html", context)
 
+@login_required
 @admin_required
 def ticket_delete(request, id):
     ticket = Ticket.objects.get(id=id)
@@ -121,7 +123,8 @@ def ticket_delete(request, id):
     return redirect('ticket_list')
 
 
-
+@login_required
+@admin_required
 def custom_category_create(request, custom_form, render_page, redirect_url):
     context = {}
     form = custom_form()
@@ -136,7 +139,7 @@ def custom_category_create(request, custom_form, render_page, redirect_url):
     context['form'] = form
     return render(request, render_page, context)
 
-
+@login_required
 @admin_required
 def category_create(request):
     return custom_category_create(
@@ -145,19 +148,26 @@ def category_create(request):
         render_page = 'vats/category_create.html', 
         redirect_url = 'category_list'
     )
+    
+    
+@login_required
 @admin_required
 def category_list(request):
     context = {}
     context['categories'] = Category.objects.all()
     return render(request, 'vats/category_list.html', context)
 
-
+@login_required
+@manager_required
 def ticket_completed(request,id):
     ticket = Ticket.objects.get(id=id)
     ticket.status = "Completed"
     ticket.save()
     return redirect('ticket_detail',id)
 
+
+@login_required
+@manager_required
 def ticket_cancelled(request,id):
     
     ticket = Ticket.objects.get(id=id)
@@ -166,6 +176,8 @@ def ticket_cancelled(request,id):
     return redirect('ticket_detail',id)
 
 
+@login_required
+@admin_required
 def custom_subcategory_create(request, custom_form, render_page, redirect_url):
     context = {}
     form = custom_form()
@@ -180,6 +192,8 @@ def custom_subcategory_create(request, custom_form, render_page, redirect_url):
     context['form'] = form
     return render(request, render_page, context)
 
+
+@login_required
 @admin_required
 def subcategory_create(request):
     return custom_subcategory_create(
@@ -188,8 +202,13 @@ def subcategory_create(request):
         render_page = 'vats/subcategory_create.html', 
         redirect_url = 'subcategory_list'
     )
+    
+
+@login_required
 @admin_required
 def subcategory_list(request):
     context = {}
-    context['categories'] = Subcategory.objects.all()
+    context['subcategories'] = Subcategory.objects.all()
     return render(request, 'vats/subcategory_list.html', context)
+
+

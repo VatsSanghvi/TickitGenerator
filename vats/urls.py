@@ -17,5 +17,7 @@ urlpatterns = [
     path('subcategory_list/', views.subcategory_list, name='subcategory_list'),
     path('ticket_completed/<int:id>', views.ticket_completed, name='ticket_completed'),
     path('ticket_cancelled/<int:id>', views.ticket_cancelled, name='ticket_cancelled'),
+    path('email_template/',views.ticket_create, name='email_template'),
+
 
 ]
