@@ -6,14 +6,22 @@
                 </title>
                 </head>
                 <body>
+                <h3>Dear {{ user.first_name }},</h3>
+                <br>
+                <h3>Details regarding your ticket is mentioned below : </h3>
+                <br>
+                <br>
                 
-                
+                <h3>Ticket No. --> {{context.id}}</h3>
                 <h3>Category --> {{context.category}}</h3>
                 <h3>SubCategory --> {{context.subcategory}}</h3>
                 <h3>TItle --> {{context.title}}</h3>
                 <h3>Problem Description --> {{context.problem_descp}}</h3>
-                <h3>Created By --> {{context.created_by}}</h3>
-                <h3>Date/Time --> {{context.start_date_time}}</h3>
+                {% comment %} <h3>Created By --> {{context.created_by}}</h3> {% endcomment %}
+                <h3>Created Date/Time --> {{context.start_date_time}}</h3>
+                {% if context.status == "Completed" %}
+                    <h3>End Date/Time --> {{context.end_date_time}}</h3>
+                {% endif %}
                 <h3>Status --> {{context.status}}</h3>
 
                 

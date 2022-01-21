@@ -8,6 +8,7 @@
                 <th scope="col">No</th>
                 <th scope="col">Name</th>
                 <th scope="col">Category</th>
+                <th scope="col">Delete</th>
             </tr>
         </thead>
         <tbody>
@@ -16,6 +17,7 @@
                     <td scope="row">{{ forloop.counter }}</td>
                     <td scope="row">{{ subcategory.name }}</td>
                     <td scope="row">{{ subcategory.category.name }}</td>
+                    <td><a href={% url 'subcategory_delete' subcategory.id %}>Delete</a></td>
                 </tr>
             {% endfor %}
         </tbody>

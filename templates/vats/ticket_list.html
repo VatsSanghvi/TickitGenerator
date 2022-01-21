@@ -20,7 +20,8 @@
         <tbody>
             {% for ticket in tickets %}
                 <tr>
-                    <th scope="row">{{ forloop.counter }}</th>
+                    {% comment %} <th scope="row">{{ forloop.counter }}</th> {% endcomment %}
+                    <td>{{ticket.id}}</td>
                     <td>{{ ticket.start_date_time }}</td>
                     <td>{{ ticket.created_by.first_name }} {{ ticket.created_by.last_name }}</td>
                     <td>{{ ticket.category }}</td>

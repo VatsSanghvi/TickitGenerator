@@ -1,3 +1,4 @@
+from tkinter import DISABLED
 from django.db import models
 from django.utils.translation import gettext as _
 from django.urls import reverse
@@ -55,16 +56,19 @@ class Ticket(models.Model):
         ("Moderate","Moderate"),
         ("Low","Low"),
     )
-    category = models.ForeignKey("vats.Category",on_delete=models.SET_NULL,blank=True,null=True)
-    subcategory = models.ForeignKey("vats.Subcategory",on_delete=models.SET_NULL,blank=True,null=True)
+    category = models.ForeignKey("vats.Category",on_delete=models.CASCADE)
+    
+    subcategory = models.ForeignKey("vats.Subcategory",on_delete=models.CASCADE)
     title = models.CharField(_("Title"), max_length=50,)
     problem_descp = models.TextField(_("Problem Description"), max_length=500)
     created_by = models.ForeignKey("registration.User", related_name=_("Issues"), on_delete=models.CASCADE)
     priority = models.CharField(_("Priority"), max_length=50,null=True,blank=True,choices=priority_choice)
     start_date_time = models.DateTimeField(_("Start Date Time"), auto_now_add=True)
-    end_date_time = models.DateTimeField(_("End Date Time"), null=True, blank=True)
+    end_date_time = models.DateTimeField(_("End Date Time"), auto_now_add=True,)
     assigned_to = models.ForeignKey("registration.User",related_name=_("Tasks"), on_delete=models.SET_NULL,null=True,blank=True)
     status = models.CharField(_("Status"), max_length=50,choices=status_choice,null=True,blank=True)
+    # updates = models.CharField(_("Updates"), max_length=50,blank=True,null=True)
+    
    
     class Meta:
         verbose_name = _("Ticket")
@@ -80,10 +84,10 @@ class Ticket(models.Model):
 
 class WorkNotes(models.Model):
 
-    ticket = models.ForeignKey("vats.Ticket", on_delete=models.CASCADE)
+    ticket = models.ForeignKey("vats.Ticket",related_name="Worknotes", on_delete=models.CASCADE)
     comments = models.TextField(_("Comments"))
     commented_by = models.ForeignKey("registration.User", on_delete=models.CASCADE)
-    created_at = models.DateTimeField(_("Created At"), auto_now_add=True)
+    created_at = models.DateTimeField(_("Created Date/Time"), auto_now_add=True)
     
     class Meta:
         verbose_name = _("WorkNotes")

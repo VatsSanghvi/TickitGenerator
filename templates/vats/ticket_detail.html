@@ -1,6 +1,14 @@
 {% extends 'base.html' %}
 {% block title %}{{user_details.first_name}}{% endblock title %}
-{% block css %}{% endblock css %}
+{% block css %}
+<style>
+  .whatsapp_float{
+    position:fixed;
+    bottom:40px;
+    right:20px;
+  }
+</style>
+{% endblock css %}
 {% block body %}
   <h1>Ticket Details</h1>
   <p><b>Created Date</b><br> {{ ticket.start_date_time }}</p>
@@ -25,14 +33,20 @@
   {% endif %}
 
   {% if request.user.role == "Admin" %}
-    <a href={% url 'ticket_update' ticket.id %} class="btn btn-primary">Update</a>
+    <a href={% url 'ticket_update' ticket.id %} class="btn btn-primary">Assign</a>
   {% elif request.user.role == "Manager" and ticket.is_open %}
   <a href={% url 'ticket_update' ticket.id %} class="btn btn-primary">Update</a>
 
   {% if request.user.role != "Admin" %}
-    <a href={% url 'ticket_cancel' ticket.id %} class="btn btn-warning">Cancel request</a>
+    <a href={% url 'worknotes_create' ticket.id %} class="btn btn-warning">Cancel request</a>
   {% endif %}
     
   {% endif %}
+  <h3>Comment.. </h3>
+  <br>
+  <br>
+  <div class="whatsapp_float">
+    <img src='whatsapp.png' width="50px" class = "whatsapp_float_btn"/>
+  </div>
 {% endblock body %}
 {% block js %}{% endblock js %}

@@ -51,7 +51,7 @@ def viewernotallowed(my_function):
     def wrapper(request, *args, **kwargs):
         print(kwargs)
         ticket = Ticket.objects.get(id=kwargs['id'])
-        if request.user.role != "Viewer" and ticket.assigned_to.id == request.user.id:
+        if request.user.role == "Admin" or ticket.assigned_to.id == request.user.id:
             return my_function(request, *args, **kwargs)
         else:
             messages.warning(request, 'You are not allowed to access this page.')
