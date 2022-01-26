@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext as _
 from django.urls import reverse
+from datetime import timedelta
 
 class Category(models.Model):
 
@@ -62,8 +63,8 @@ class Ticket(models.Model):
     problem_descp = models.TextField(_("Problem Description"), max_length=500)
     created_by = models.ForeignKey("registration.User", related_name=_("Issues"), on_delete=models.CASCADE)
     priority = models.CharField(_("Priority"), max_length=50,null=True,blank=True,choices=priority_choice)
-    start_date_time = models.DateTimeField(_("Start Date Time"), auto_now_add=True)
-    end_date_time = models.DateTimeField(_("End Date Time"), auto_now_add=True,)
+    created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
+    updated_at = models.DateTimeField(_("Updated at"), auto_now=True,)
     assigned_to = models.ForeignKey("registration.User",related_name=_("Tasks"), on_delete=models.SET_NULL,null=True,blank=True)
     status = models.CharField(_("Status"), max_length=50,choices=status_choice,null=True,blank=True)
     # updates = models.CharField(_("Updates"), max_length=50,blank=True,null=True)
@@ -80,6 +81,14 @@ class Ticket(models.Model):
         if self.status == 'Completed' or self.status == 'Cancelled':
             return False
         return True
+    
+    def get_created_at(self):
+        date = self.created_at + timedelta(days=0, hours=5, minutes=30)
+        return date
+    
+    def get_updated_at(self):
+        date = self.updated_at + timedelta(days=0, hours=5, minutes=30)
+        return date
 
 class WorkNotes(models.Model):
 

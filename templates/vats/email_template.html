@@ -18,10 +18,8 @@
                 <h3>TItle --> {{context.title}}</h3>
                 <h3>Problem Description --> {{context.problem_descp}}</h3>
                 {% comment %} <h3>Created By --> {{context.created_by}}</h3> {% endcomment %}
-                <h3>Created Date/Time --> {{context.start_date_time}}</h3>
-                {% if context.status == "Completed" %}
-                    <h3>End Date/Time --> {{context.end_date_time}}</h3>
-                {% endif %}
+                <h3>Created at --> {{context.created_at}}</h3>
+                <h3>Updated at --> {{context.updated_at}}</h3>
                 <h3>Status --> {{context.status}}</h3>
 
                 

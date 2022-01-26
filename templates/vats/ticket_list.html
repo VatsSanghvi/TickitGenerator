@@ -6,13 +6,13 @@
         <thead>
             <tr>
                 <th scope="col">Ticket No</th>
-                <th scope="col">Start Date/Time</th>             
+                <th scope="col">Created at</th>             
                 <th scope="col">Created BY</th>
                 <th scope="col">Group</th>
                 <th scope="col">Title</th>
                 <th scope="col">Assigned To</th>
                 <th scope="col">Priority</th>
-                <th scope="col">End Date/Time</th>
+                <th scope="col">Updated at</th>
                 <th scope="col">Status</th>
                 <th scope="col">View</th>
             </tr>
@@ -22,13 +22,13 @@
                 <tr>
                     {% comment %} <th scope="row">{{ forloop.counter }}</th> {% endcomment %}
                     <td>{{ticket.id}}</td>
-                    <td>{{ ticket.start_date_time }}</td>
+                    <td>{{ ticket.get_created_at }}</td>
                     <td>{{ ticket.created_by.first_name }} {{ ticket.created_by.last_name }}</td>
                     <td>{{ ticket.category }}</td>
                     <td>{{ ticket.title }}</td>
                     <td>{{ ticket.assigned_to }}</td>
                     <td>{{ ticket.priority }}</td>
-                    <td>{{ ticket.end_date_time }}</td>
+                    <td>{{ ticket.get_updated_at }}</td>
                     <td>{{ ticket.status }}</td>
                     <td><a href={% url 'ticket_detail' ticket.id %}>View</a></td>
                 </tr>

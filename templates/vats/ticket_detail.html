@@ -11,7 +11,7 @@
 {% endblock css %}
 {% block body %}
   <h1>Ticket Details</h1>
-  <p><b>Created Date</b><br> {{ ticket.start_date_time }}</p>
+  <p><b>Created at</b><br> {{ ticket.created_at }}</p>
   <p><b>Category</b><br>{{ ticket.category }}</p>
   <p><b>Sub category</b><br>{{ ticket.subcategory }}</p>
   <p><b>Title</b><br>{{ ticket.title }}</p>
@@ -28,9 +28,7 @@
   <p><b>Assigned To</b><br>{{ ticket.assigned_to.first_name }} {{ ticket.assigned_to.last_name }}</p>
   {% endif %}
   
-  {% if ticket.end_date_time %}
-  <p><b>End date</b><br>{{ ticket.end_date_time }}</p>
-  {% endif %}
+  <p><b>Updated at</b><br>{{ ticket.updated_at }}</p>
 
   {% if request.user.role == "Admin" %}
     <a href={% url 'ticket_update' ticket.id %} class="btn btn-primary">Assign</a>
