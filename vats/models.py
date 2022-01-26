@@ -56,8 +56,8 @@ class Ticket(models.Model):
         ("Moderate","Moderate"),
         ("Low","Low"),
     )
+    number = models.CharField(_("Number"), max_length=50, null=True, blank=True)
     category = models.ForeignKey("vats.Category",on_delete=models.CASCADE)
-    
     subcategory = models.ForeignKey("vats.Subcategory",on_delete=models.CASCADE)
     title = models.CharField(_("Title"), max_length=50,)
     problem_descp = models.TextField(_("Problem Description"), max_length=500)
@@ -73,7 +73,20 @@ class Ticket(models.Model):
         verbose_name_plural = _("Tickets")
 
     def __str__(self):
-        return self.title
+        return self.number
+    
+    def save(self, *args, **kwargs):
+        if not self.number:
+            latest = Ticket.objects.all().order_by('number').last()
+            if latest:
+                number = int(latest.number) + 1
+            else:
+                number = 1
+            str_zeros = ""
+            for _ in range(6 - len(str(number))):
+                str_zeros += "0"
+            self.number = "TKT" + str_zeros + str(number)
+        super(Ticket, self).save(*args, **kwargs)
     
     def is_open(self):
         if self.status == 'Completed' or self.status == 'Cancelled':
