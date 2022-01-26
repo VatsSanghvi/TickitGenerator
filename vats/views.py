@@ -1,4 +1,5 @@
 from unicodedata import category
+from django.http.response import HttpResponse
 from django.shortcuts import redirect, render
 from .models import  Ticket,Category,Subcategory,WorkNotes
 from .forms import TicketForm,CategoryForm, TicketUpdateForm,SubcategoryForm,WorkNotesForm
@@ -277,3 +278,11 @@ def worknotes_create(request,id):
         render_page = 'vats/worknotes_create.html', 
         redirect_url = 'ticket_list'
     )
+
+def get_subcategory(request):
+    category = request.POST['selected_category']
+    subcategories = Subcategory.objects.filter(category=category)
+    str_data = "<option value seleccted>---------</option>"
+    for subcategory in subcategories:
+        str_data += "<option value='" + str(subcategory.id) + "'>" + str(subcategory.name) + "</option>"
+    return HttpResponse(str_data)

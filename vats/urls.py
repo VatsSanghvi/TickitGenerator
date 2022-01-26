@@ -1,9 +1,6 @@
 from . import views
 from django.urls import path
 
-
-
-
 urlpatterns = [
     path('ticket_create/', views.ticket_create, name='ticket_create'),
     path('ticket_list/', views.ticket_list, name='ticket_list'),
@@ -23,6 +20,8 @@ urlpatterns = [
     path('ticket_cancelled/<int:id>', views.ticket_cancelled, name='ticket_cancelled'),
     path('email_template/',views.ticket_create, name='email_template'),
     path('worknotes_create/<int:id>',views.worknotes_create, name='worknotes_create'),
-
+    
+    # API
+    path('get_subcategory/',views.get_subcategory, name='get_subcategory'),
 
 ]
