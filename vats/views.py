@@ -279,10 +279,7 @@ def worknotes_create(request,id):
         redirect_url = 'ticket_list'
     )
 
-def get_subcategory(request):
-    category = request.POST['selected_category']
-    subcategories = Subcategory.objects.filter(category=category)
-    str_data = "<option value seleccted>---------</option>"
-    for subcategory in subcategories:
-        str_data += "<option value='" + str(subcategory.id) + "'>" + str(subcategory.name) + "</option>"
-    return HttpResponse(str_data)
+def load_subcategories(request):
+    category_id = request.GET.get('category')
+    subcategories = Subcategory.objects.filter(category_id=category_id).order_by('name')
+    return render(request, 'vats/subcategory_dropdown_list_options.html', {'subcategories': subcategories})

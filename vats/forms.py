@@ -4,14 +4,15 @@ from .models import Ticket,Category,WorkNotes,Subcategory
 
 
 class TicketForm(forms.ModelForm):
-    # subcategory = forms.ModelChoiceField(queryset=Subcategory.objects.filter(category__id = self.fields['category']))
     
     class Meta:
         model = Ticket
         fields = ("category", "subcategory", "title","problem_descp")
+        
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['subcategory'].queryset = Subcategory.objects.none()
     
-    
-
 class TicketUpdateForm(forms.ModelForm):
     
     class Meta:

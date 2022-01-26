@@ -98,5 +98,3 @@ class WorkNotes(models.Model):
 
     def get_absolute_url(self):
         return reverse("WorkNotes_detail", kwargs={"id": self.id})
-
-

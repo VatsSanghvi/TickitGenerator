@@ -7,25 +7,29 @@
     {{form|crispy}}
     <input type='submit' class="btn btn-primary" value="Submit">
 </form>
+{% comment %} {% if request.user.role == "Manager" %}
 <script>
-  $(document).on('change', "#id_category", function () {
-    var category = $(this).val();
+  window.onload = my_func();
+  function my_func(){
+    $("#id_priority").prop('disabled', true);
+  }
+</script>
+{% endif %} {% endcomment %}
+<script>
+  
+  $("#id_category").change(function () {
+    var categoryId = $(this).val();
 
-    if (category) {
-      $.ajax({
-        type: 'post',
-        url: '{% url "get_subcategory" %}',
-        data: {
-          csrfmiddlewaretoken:'{{csrf_token}}'
-          'selected_category' : category ,
-        },
-        success: function(data){
-          $("#id_subcategory").empty();
-          $("#id_subcategory").append(data);
-        },
-        error:function (response, error){}
-      });
-    }
+    $.ajax({
+      url: "{% url 'ajax_load_subcategories' %}",
+      data: {
+        'category': categoryId
+      },
+      success: function (data) {
+        $("#id_subcategory").html(data);
+      },
+      error:function (response, error){}
+    });
   });
 </script>
 {% endblock body %}

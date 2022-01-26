@@ -22,6 +22,5 @@ urlpatterns = [
     path('worknotes_create/<int:id>',views.worknotes_create, name='worknotes_create'),
     
     # API
-    path('get_subcategory/',views.get_subcategory, name='get_subcategory'),
-
+    path('ajax/load-subcategories/', views.load_subcategories, name='ajax_load_subcategories'),
 ]
