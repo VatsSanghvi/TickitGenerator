@@ -11,7 +11,6 @@ class TicketForm(forms.ModelForm):
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['subcategory'].queryset = Subcategory.objects.none()
     
 class TicketUpdateForm(forms.ModelForm):
     

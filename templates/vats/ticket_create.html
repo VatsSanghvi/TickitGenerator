@@ -16,7 +16,10 @@
 </script>
 {% endif %} {% endcomment %}
 <script>
-  
+  window.onload = my_func();
+  function my_func(){
+    $("#id_subcategory").html("<option value selected>---------</option>");
+  }
   $("#id_category").change(function () {
     var categoryId = $(this).val();
 
