@@ -66,9 +66,7 @@ class Ticket(models.Model):
     created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
     updated_at = models.DateTimeField(_("Updated at"), auto_now=True,)
     assigned_to = models.ForeignKey("registration.User",related_name=_("Tasks"), on_delete=models.SET_NULL,null=True,blank=True)
-    status = models.CharField(_("Status"), max_length=50,choices=status_choice,null=True,blank=True)
-    # updates = models.CharField(_("Updates"), max_length=50,blank=True,null=True)
-    
+    status = models.CharField(_("Status"), max_length=50,choices=status_choice,null=True,blank=True)    
    
     class Meta:
         verbose_name = _("Ticket")
