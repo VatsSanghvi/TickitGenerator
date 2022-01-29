@@ -79,7 +79,7 @@ class Ticket(models.Model):
         if not self.number:
             latest = Ticket.objects.all().order_by('number').last()
             if latest:
-                number = int(latest.number) + 1
+                number = int(latest.number[3:]) + 1
             else:
                 number = 1
             str_zeros = ""
