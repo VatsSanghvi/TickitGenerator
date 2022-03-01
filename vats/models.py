@@ -2,6 +2,8 @@ from django.db import models
 from django.utils.translation import gettext as _
 from django.urls import reverse
 from datetime import timedelta
+from twilio.rest import Client
+import os
 
 class Category(models.Model):
 
@@ -86,7 +88,20 @@ class Ticket(models.Model):
             for _ in range(6 - len(str(number))):
                 str_zeros += "0"
             self.number = "TKT" + str_zeros + str(number)
-        super(Ticket, self).save(*args, **kwargs)
+            
+        account_sid = 'ACcad8c9cd24dc3fa5b6c96ce3cb9cee56'
+        auth_token = 'e43dbe58d768be26b75f9321aae75420'
+        client = Client(account_sid, auth_token)
+
+        message = client.messages.create(
+                                    body='Hello, Your Ticket has been generated kindly check it in your portal',
+                                    from_='+17752567143',
+                                    # to=str(self.created_by.phone_number)
+                                    to='+917048850488'
+                                )
+
+        print(message.sid)
+        return super(Ticket, self).save(*args, **kwargs)
     
     def is_open(self):
         if self.status == 'Completed' or self.status == 'Cancelled':

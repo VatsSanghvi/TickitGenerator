@@ -9,6 +9,7 @@ from django.core.mail import send_mail, EmailMessage
 from django.template.loader import render_to_string
 from tickit import settings
 
+
 from registration.decorators import logout_required, manager_required, viewer_required, admin_required, viewernotallowed
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
