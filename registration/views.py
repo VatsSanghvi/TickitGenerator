@@ -25,6 +25,19 @@ def home(request):
 @method_decorator(admin_required, name='dispatch')
 class UserListView(LoginRequiredMixin, ListView):
     model = User
+    # default context = model_list
+    # default template = app_name/model_list.html
+    # default query = model.objects.all()
+
+@method_decorator(login_required, name='dispatch')
+@method_decorator(admin_required, name='dispatch')
+class UserRoleListView(LoginRequiredMixin, ListView):
+    model = User
+    # default context = model_list
+    # default template = app_name/model_list.html
+    # default query = model.objects.all()
+    def get_queryset(self):
+        return User.objects.filter(role=self.kwargs['role'])
 
 @method_decorator(my_user_details, name='dispatch')
 class UserDetailView(LoginRequiredMixin, DetailView):

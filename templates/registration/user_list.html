@@ -20,7 +20,7 @@
           <th scope="row">{{forloop.counter}}</th>
           <td>{{user_detail.first_name|capfirst}} {{user_detail.last_name|capfirst}}</td>
           <td>{{user_detail.email}}</td>
-          <td>{{user_detail.phonenumber}}</td>
+          <td>{{user_detail.phone_number}}</td>
           <td>{{user_detail.role}}</td>
           <td><a href="{% url 'user_detail' user_detail.id %}">View</a></td>
         </tr>
