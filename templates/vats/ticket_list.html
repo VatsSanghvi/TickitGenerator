@@ -7,21 +7,20 @@
             <tr>
                 <th scope="col">Number</th>
                 <th scope="col">Created at</th>             
-                <th scope="col">Created BY</th>
+                <th scope="col">Created by</th>
                 <th scope="col">Group</th>
                 <th scope="col">Title</th>
                 <th scope="col">Assigned To</th>
                 <th scope="col">Priority</th>
                 <th scope="col">Updated at</th>
                 <th scope="col">Status</th>
-                <th scope="col">View</th>
             </tr>
         </thead>
         <tbody>
             {% for ticket in tickets %}
                 <tr>
                     {% comment %} <th scope="row">{{ forloop.counter }}</th> {% endcomment %}
-                    <td>{{ ticket.number }}</td>
+                    <td><a href={% url 'ticket_detail' ticket.id %}>{{ ticket.number }}</a></td>
                     <td>{{ ticket.get_created_at }}</td>
                     <td>{{ ticket.created_by.first_name }} {{ ticket.created_by.last_name }}</td>
                     <td>{{ ticket.category }}</td>
@@ -30,7 +29,6 @@
                     <td>{{ ticket.priority }}</td>
                     <td>{{ ticket.get_updated_at }}</td>
                     <td>{{ ticket.status }}</td>
-                    <td><a href={% url 'ticket_detail' ticket.id %}>View</a></td>
                 </tr>
             {% endfor %}
         </tbody>
