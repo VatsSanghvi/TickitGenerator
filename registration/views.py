@@ -38,11 +38,6 @@ class UserRoleListView(LoginRequiredMixin, ListView):
     # default query = model.objects.all()
     def get_queryset(self):
         return User.objects.filter(role=self.kwargs['role'])
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['role'] = self.kwargs['role']
-        return context
 
 @method_decorator(my_user_details, name='dispatch')
 class UserDetailView(LoginRequiredMixin, DetailView):

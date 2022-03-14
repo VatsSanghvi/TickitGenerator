@@ -5,17 +5,19 @@
     <table class="table table-hover">
         <thead>
             <tr>
-                <th scope="col">#</th>
-                <th scope="col">Name</th>
+                <th scope="col">Category No</th>
+                <th scope="col">Categories Name</th>
                 <th scope="col">Delete</th>
             </tr>
         </thead>
         <tbody>
             {% for category in categories %}
                 <tr>
-                    <th scope="row">{{ forloop.counter }}</th>
-                    <td scope="row"><a href="{% url 'subcategory_list' category.id %}">{{ category.name }}</a></td>
+                    <td scope="row">{{ forloop.counter }}</td>
+                    <td scope="row">{{ category.name }}</td>
                     <td><a href={% url 'category_delete' category.id %}>Delete</a></td>
+
+                    
                 </tr>
             {% endfor %}
         </tbody>

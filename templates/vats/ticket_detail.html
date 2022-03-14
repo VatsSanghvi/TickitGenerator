@@ -10,7 +10,7 @@
 </style>
 {% endblock css %}
 {% block body %}
-  <h1>Ticket Details:</h1>
+  <h1>Ticket Details</h1>
   <p><b>Created at</b><br> {{ ticket.created_at }}</p>
   <p><b>Category</b><br>{{ ticket.category }}</p>
   <p><b>Sub category</b><br>{{ ticket.subcategory }}</p>
@@ -31,10 +31,7 @@
   <p><b>Updated at</b><br>{{ ticket.updated_at }}</p>
 
   {% if request.user.role == "Admin" %}
-    {% if ticket.status == "Pending" %}
-      <a href={% url 'ticket_approve' ticket.id %} class="btn btn-primary">Approve</a>
-      <a href={% url 'ticket_reject' ticket.id %} class="btn btn-danger">Reject</a>
-    {% endif %}
+    <a href={% url 'ticket_update' ticket.id %} class="btn btn-primary">Assign</a>
   {% elif request.user.role == "Manager" and ticket.is_open %}
   <a href={% url 'ticket_update' ticket.id %} class="btn btn-primary">Update</a>
 

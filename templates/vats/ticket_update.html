@@ -2,11 +2,26 @@
 {%load crispy_forms_tags %} 
 {% block body %}
 <form method="POST">
-    <h1>Ticket {{update_type}}:</h1>
+    {% if request.user.role == "Admin" %}<h1>Ticket Assign</h1>{% endif %}
+    {% if request.user.role == "Manager" %}<h1>Ticket Update</h1>{% endif %}
     
     {% csrf_token %}
     {{form|crispy}}
-    <input type='submit' class="btn btn-primary" value="Submit">
 
+    {% if request.user.role == "Admin" %}
+        <h1><input type='submit' class="btn btn-primary" value="Assign"></h1>
+    {% endif %}
+    {% if request.user.role == "Manager" %}
+        <h1><input type='submit' class="btn btn-primary" value="Update"></h1>
+    {% endif %}
+    
+    {% comment %} <input type='submit' class="btn btn-primary" value="Scoping">
+    <input type='submit' class="btn btn-primary" value="In Progress">
+    <input type='submit' class="btn btn-primary" value="Completed">
+    <input type='submit' class="btn btn-primary" value="Cancelled"> {% endcomment %}
+    {% if request.user.role == "Admin" %}
+        <a class="btn btn-danger" href="{% url 'ticket_delete'  form.instance.id  %}">Delete</a>
+    {% endif %}
+    
 </form>
 {% endblock body %}

@@ -1,5 +1,7 @@
 from django import forms
-from .models import Ticket, Category, Subcategory
+from .models import Ticket,Category,WorkNotes,Subcategory
+
+
 
 class TicketForm(forms.ModelForm):
     
@@ -9,25 +11,6 @@ class TicketForm(forms.ModelForm):
         
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-
-class TicketApproveForm(forms.ModelForm):
-    
-    class Meta:
-        model = Ticket
-        fields = ("priority", "assigned_to")
-    
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['priority'].required = True
-        self.fields['assigned_to'].required = True
-
-class TicketRejectForm(forms.ModelForm):
-    
-    comments = forms.CharField(widget=forms.Textarea, max_length=150, required=True)
-    
-    class Meta:
-        model = Ticket
-        fields = ("priority",)
     
 class TicketUpdateForm(forms.ModelForm):
     
@@ -56,8 +39,8 @@ class SubcategoryForm(forms.ModelForm):
         model = Subcategory
         fields = ("category", "name")
 
-# class WorkNoteForm(forms.ModelForm):
+class WorkNotesForm(forms.ModelForm):
     
-#     class Meta:
-#         model = WorkNote
-#         fields = ("ticket","comments")
+    class Meta:
+        model = WorkNotes
+        fields = ("ticket","comments")
