@@ -2,27 +2,23 @@
 {% block title %}Users{% endblock title %}
 {% block css %}{% endblock css %}
 {% block body %}
-  <h1>Users</h1>
-  <table class="table">
+  <h1>Users {% if role %}: {{role|capfirst}}s{% endif %}</h1>
+  <table class="table table-hover sortable">
     <thead>
       <tr>
-        <th scope="col">#</th>
         <th scope="col">Name</th>
         <th scope="col">Email</th>
         <th scope="col">Phone Number</th>
         <th scope="col">Role</th>
-        <th scope="col">View</th>
       </tr>
     </thead>
     <tbody>
       {% for user_detail in user_list %}
         <tr>
-          <th scope="row">{{forloop.counter}}</th>
-          <td>{{user_detail.first_name|capfirst}} {{user_detail.last_name|capfirst}}</td>
+          <th scope="row"><a href="{% url 'user_detail' user_detail.id %}">{{user_detail.first_name|capfirst}} {{user_detail.last_name|capfirst}}</a></th>
           <td>{{user_detail.email}}</td>
           <td>{{user_detail.phone_number}}</td>
           <td>{{user_detail.role}}</td>
-          <td><a href="{% url 'user_detail' user_detail.id %}">View</a></td>
         </tr>
       {% empty %}
         <tr><td colspan="4">No users available</td></tr>
