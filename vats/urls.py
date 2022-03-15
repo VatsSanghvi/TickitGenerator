@@ -12,14 +12,17 @@ urlpatterns = [
     path('category_list/', views.category_list, name='category_list'),
     path('category_delete/<int:id>', views.category_delete, name='category_delete'),
 
-    path('subcategory_create/', views.subcategory_create, name='subcategory_create'),
-    path('subcategory_list/', views.subcategory_list, name='subcategory_list'),
+    path('subcategory_create/<int:id>', views.subcategory_create, name='subcategory_create'),
+    path('subcategory_list/<int:id>', views.subcategory_list, name='subcategory_list'),
     path('subcategory_delete/<int:id>', views.subcategory_delete, name='subcategory_delete'),
 
     path('ticket_completed/<int:id>', views.ticket_completed, name='ticket_completed'),
+    path('ticket_approve/<int:id>', views.ticket_approve, name='ticket_approve'),
+    path('ticket_scoping/<int:id>', views.ticket_scoping, name='ticket_scoping'),
+    path('ticket_reject/<int:id>', views.ticket_reject, name='ticket_reject'),
     path('ticket_cancelled/<int:id>', views.ticket_cancelled, name='ticket_cancelled'),
     path('email_template/',views.ticket_create, name='email_template'),
-    path('worknotes_create/<int:id>',views.worknotes_create, name='worknotes_create'),
+    # path('worknotes_create/<int:id>',views.worknotes_create, name='worknotes_create'),
     
     # API
     path('ajax/load-subcategories/', views.load_subcategories, name='ajax_load_subcategories'),
