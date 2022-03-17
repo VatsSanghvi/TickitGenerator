@@ -121,6 +121,14 @@ def ticket_scoping(request, id):
     return redirect('ticket_detail', id)
 
 @login_required
+@manager_required
+def ticket_inprogress(request, id):
+    ticket = Ticket.objects.get(id=id)
+    ticket.status = 'In Progress'
+    ticket.save()
+    return redirect('ticket_detail', id)
+
+@login_required
 @viewernotallowed
 def ticket_update(request, id):
 
@@ -243,21 +251,21 @@ def subcategory_delete(request,id):
     subcategory.delete()
     return redirect('subcategory_list')
 
-@login_required
-@manager_required
-def worknotes_create(request,id):
-    context = {}
-    form = WorkNotesForm()
+# @login_required
+# @manager_required
+# def worknotes_create(request,id):
+#     context = {}
+#     form = WorkNotesForm()
 
-    if request.method == "POST":
-        form = WorkNotesForm(request.POST)
-        if form.is_valid():
-            worknotes = form.save(commit=False)
-            worknotes.commented_by = request.user
+#     if request.method == "POST":
+#         form = WorkNotesForm(request.POST)
+#         if form.is_valid():
+#             worknotes = form.save(commit=False)
+#             worknotes.commented_by = request.user
             
-            worknotes.save()                     
-            messages.success(request, 'Your comment for cancellation of ticket has been created successfully.')
-            return redirect('ticket_list')
+#             worknotes.save()                     
+#             messages.success(request, 'Your comment for cancellation of ticket has been created successfully.')
+#             return redirect('ticket_list')
 
     context['form'] = form
     return render(request, 'vats/worknotes_create.html', context)
