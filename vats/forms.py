@@ -43,7 +43,6 @@ class TicketUpdateForm(forms.ModelForm):
         self.fields['problem_descp'].disabled = True
         self.fields['created_by'].disabled = True
 
-
 class CategoryForm(forms.ModelForm):
     
     class Meta:
@@ -55,9 +54,3 @@ class SubcategoryForm(forms.ModelForm):
     class Meta:
         model = Subcategory
         fields = ("category", "name")
-
-# class WorkNoteForm(forms.ModelForm):
-    
-#     class Meta:
-#         model = WorkNote
-#         fields = ("ticket","comments")

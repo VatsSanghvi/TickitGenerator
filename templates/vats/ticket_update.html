@@ -1,12 +1,10 @@
 {% extends 'base.html' %}
 {%load crispy_forms_tags %} 
 {% block body %}
+<h1>Ticket {{update_type}}:</h1>
 <form method="POST">
-    <h1>Ticket {{update_type}}:</h1>
-    
     {% csrf_token %}
     {{form|crispy}}
     <input type='submit' class="btn btn-primary" value="Submit">
-
 </form>
 {% endblock body %}

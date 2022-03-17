@@ -1,12 +1,11 @@
 from django.shortcuts import redirect, render
-from .models import  Ticket,Category,Subcategory #,WorkNote
-from .forms import TicketForm,CategoryForm, TicketUpdateForm,SubcategoryForm, TicketApproveForm, TicketRejectForm
+from .models import  Ticket, Category, Subcategory
+from .forms import TicketForm, CategoryForm, TicketUpdateForm, SubcategoryForm, TicketApproveForm, TicketRejectForm
 from registration.models import User
 from django.conf import settings
-from django.core.mail import send_mail, EmailMessage
+from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from tickit import settings
-
 
 from registration.decorators import manager_required, viewer_required, admin_required, viewernotallowed
 from django.contrib.auth.decorators import login_required
@@ -52,7 +51,6 @@ def ticket_list(request):
     else :
         request.user.role == "Manager"
         context['tickets'] = Ticket.objects.filter(assigned_to=request.user)
-
     return render(request, 'vats/ticket_list.html', context)
     
 @login_required
@@ -62,10 +60,10 @@ def ticket_list_status(request, status):
     if request.user.role == "Admin":
         context['tickets'] = Ticket.objects.filter(status=status)
     elif request.user.role == "Viewer":
-        context['tickets'] = Ticket.objects.filter(created_by = request.user , status=status)
+        context['tickets'] = Ticket.objects.filter(created_by=request.user , status=status)
     else :
         request.user.role == "Manager"
-        context['tickets'] = Ticket.objects.filter(assigned_to=request.user,status=status)
+        context['tickets'] = Ticket.objects.filter(assigned_to=request.user, status=status)
 
     return render(request, 'vats/ticket_list.html', context)
 
@@ -74,8 +72,8 @@ def ticket_detail(request, id):
     ticket = Ticket.objects.get(id=id)
     user = User.objects.get(email=ticket.created_by)
     if ticket.created_by == request.user or request.user.role == "Admin" or ticket.assigned_to == request.user  :
-
         my_string = "https://wa.me/91" + str(ticket.created_by.phone_number)
+        
         context = {'ticket' : ticket , 'user' : user, "my_string" : my_string}
         return render(request, 'vats/ticket_detail.html', context)
     
@@ -115,6 +113,14 @@ def ticket_reject(request, id):
     return render(request, "vats/ticket_update.html", context)
 
 @login_required
+@manager_required
+def ticket_scoping(request, id):
+    ticket = Ticket.objects.get(id=id)
+    ticket.status = 'Scoping'
+    ticket.save()
+    return redirect('ticket_detail', id)
+
+@login_required
 @viewernotallowed
 def ticket_update(request, id):
 
@@ -150,6 +156,7 @@ def ticket_update(request, id):
     
     context = {}
     context['form'] = form
+    context['update_type'] = 'Update'
     return render(request, "vats/ticket_update.html", context)
 
 @login_required
@@ -162,31 +169,20 @@ def ticket_delete(request, id):
 
 @login_required
 @admin_required
-def custom_category_create(request, custom_form, render_page, redirect_url):
+def category_create(request):
     context = {}
-    form = custom_form()
+    form = CategoryForm()
 
     if request.method == "POST":
-        form = custom_form(request.POST)
+        form = CategoryForm(request.POST)
         if form.is_valid():
             form.save()                     
             messages.success(request, 'Your Category has been created successfully.')
-            return redirect(redirect_url)
+            return redirect('category_list')
 
     context['form'] = form
-    return render(request, render_page, context)
+    return render(request, 'vats/category_create.html', context)
 
-@login_required
-@admin_required
-def category_create(request):
-    return custom_category_create(
-        request = request, 
-        custom_form = CategoryForm, 
-        render_page = 'vats/category_create.html', 
-        redirect_url = 'category_list'
-    )
-    
-    
 @login_required
 @admin_required
 def category_list(request):
@@ -201,7 +197,6 @@ def category_delete(request, id):
     category.delete()
     return redirect('category_list')
 
-
 @login_required
 @manager_required
 def ticket_completed(request,id):
@@ -210,45 +205,35 @@ def ticket_completed(request,id):
     ticket.save()
     return redirect('ticket_detail',id)
 
-
 @login_required
 @manager_required
 def ticket_cancelled(request,id):
-    
     ticket = Ticket.objects.get(id=id)
     ticket.status = "Cancelled"
     ticket.save()
     return redirect('ticket_detail',id)
 
-
 @login_required
 @admin_required
-def subcategory_create(request, id):
+def subcategory_create(request):
     context = {}
     form = SubcategoryForm()
 
     if request.method == "POST":
-        print(request.POST)
         form = SubcategoryForm(request.POST)
         if form.is_valid():
-            form.fields['category'].initial = id
             form.save()                     
-            messages.success(request, 'Your Subcategory has been created successfully.')
-            return redirect('subcategory_list', id)
+            messages.success(request, 'Your Category has been created successfully.')
+            return redirect('subcategory_list')
 
-    form.fields['category'].initial = id
     context['form'] = form
-    
     return render(request, 'vats/subcategory_create.html', context)
-    
 
 @login_required
 @admin_required
-def subcategory_list(request, id):
+def subcategory_list(request):
     context = {}
-    category = Category.objects.get(id=id)
-    context['category'] = category
-    context['subcategories'] = Subcategory.objects.filter(category=category)
+    context['subcategories'] = Subcategory.objects.all()
     return render(request, 'vats/subcategory_list.html', context)
 
 @login_required
@@ -258,37 +243,24 @@ def subcategory_delete(request,id):
     subcategory.delete()
     return redirect('subcategory_list')
 
-
-
 @login_required
 @manager_required
+def worknotes_create(request,id):
+    context = {}
+    form = WorkNotesForm()
 
-# def custom_worknotes_create(request, custom_form, render_page, redirect_url):
-#     context = {}
-#     form = custom_form()
-
-#     if request.method == "POST":
-#         form = custom_form(request.POST)
-#         if form.is_valid():
-#             worknotes = form.save(commit=False)
-#             worknotes.commented_by = request.user
+    if request.method == "POST":
+        form = WorkNotesForm(request.POST)
+        if form.is_valid():
+            worknotes = form.save(commit=False)
+            worknotes.commented_by = request.user
             
-#             worknotes.save()                     
-#             messages.success(request, 'Your comment for cancellation of ticket has been created successfully.')
-#             return redirect(redirect_url)
+            worknotes.save()                     
+            messages.success(request, 'Your comment for cancellation of ticket has been created successfully.')
+            return redirect('ticket_list')
 
-#     context['form'] = form
-#     return render(request, render_page, context)
-
-# @login_required
-# @manager_required
-# def worknotes_create(request,id):
-#     return custom_worknotes_create(
-#         request = request, 
-#         custom_form = WorkNoteForm, 
-#         render_page = 'vats/worknotes_create.html', 
-#         redirect_url = 'ticket_list'
-#     )
+    context['form'] = form
+    return render(request, 'vats/worknotes_create.html', context)
 
 def load_subcategories(request):
     category_id = request.GET.get('category')

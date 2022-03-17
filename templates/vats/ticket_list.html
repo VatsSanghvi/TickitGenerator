@@ -19,8 +19,7 @@
         <tbody>
             {% for ticket in tickets %}
                 <tr>
-                    {% comment %} <th scope="row">{{ forloop.counter }}</th> {% endcomment %}
-                    <td><a href={% url 'ticket_detail' ticket.id %}>{{ ticket.number }}</a></td>
+                    <th scope="row"><a href={% url 'ticket_detail' ticket.id %}>{{ ticket.number }}</a></th>
                     <td>{{ ticket.get_created_at }}</td>
                     <td>{{ ticket.created_by.first_name }} {{ ticket.created_by.last_name }}</td>
                     <td>{{ ticket.category }}</td>

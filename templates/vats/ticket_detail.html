@@ -30,19 +30,15 @@
   
   <p><b>Updated at</b><br>{{ ticket.updated_at }}</p>
 
-  {% if request.user.role == "Admin" %}
-    {% if ticket.status == "Pending" %}
+  {% if request.user.role == "Admin" and ticket.status == "Pending" %}
       <a href={% url 'ticket_approve' ticket.id %} class="btn btn-primary">Approve</a>
       <a href={% url 'ticket_reject' ticket.id %} class="btn btn-danger">Reject</a>
-    {% endif %}
-  {% elif request.user.role == "Manager" and ticket.is_open %}
-  <a href={% url 'ticket_update' ticket.id %} class="btn btn-primary">Update</a>
+  {% endif %}
 
-  {% if request.user.role != "Admin" %}
-    <a href={% url 'worknotes_create' ticket.id %} class="btn btn-warning">Cancel request</a>
+  {% if request.user.role == "Manager" and ticket.status == "Assigned" %}
+    <a href={% url 'ticket_scoping' ticket.id %} class="btn btn-primary">Scoping</a>
   {% endif %}
     
-  {% endif %}
   <h3>Comment.. </h3>
   <br>
   <br>

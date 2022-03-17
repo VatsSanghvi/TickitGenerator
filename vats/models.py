@@ -33,9 +33,6 @@ class Subcategory(models.Model):
         return reverse("Subcategory_detail", kwargs={"id": self.id})
 
 class Ticket(models.Model):
-    # Approve with assignment and priority, Reject with comment
-    # ticket.assigned_to.id == request.user.id
-    # ticket.created_by.id == request.user.id
     status_choice = (
         ("Pending","Pending"),                  # Admin     => Approve with assignment, Reject with comment
         ("Assigned","Assigned"),                # Assigned to Manager, Created by Viewer   => Cancel ticket
@@ -116,19 +113,19 @@ class Ticket(models.Model):
         date = self.updated_at + timedelta(days=0, hours=5, minutes=30)
         return date
 
-class Worknote(models.Model):
+# class WorkNote(models.Model):
 
-    ticket = models.ForeignKey("vats.Ticket", on_delete=models.CASCADE)
-    comments = models.TextField(_("Comments"))
-    commented_by = models.ForeignKey("registration.User", on_delete=models.CASCADE)
-    created_at = models.DateTimeField(_("Created Date/Time"), auto_now_add=True)
+#     ticket = models.ForeignKey("vats.Ticket",related_name="Worknotes", on_delete=models.CASCADE)
+#     comments = models.TextField(_("Comments"))
+#     commented_by = models.ForeignKey("registration.User", on_delete=models.CASCADE)
+#     created_at = models.DateTimeField(_("Created Date/Time"), auto_now_add=True)
     
-    class Meta:
-        verbose_name = _("WorkNote")
-        verbose_name_plural = _("WorkNotes")
+#     class Meta:
+#         verbose_name = _("WorkNote")
+#         verbose_name_plural = _("WorkNotes")
 
-    def __str__(self):
-        return str(self.ticket.created_by) + " - " + self.comments
+#     def __str__(self):
+#         return str(self.ticket.created_by) + " - " + self.comments
 
-    def get_absolute_url(self):
-        return reverse("WorkNote_detail", kwargs={"id": self.id})
+#     def get_absolute_url(self):
+#         return reverse("WorkNote_detail", kwargs={"id": self.id})

@@ -18,6 +18,7 @@ urlpatterns = [
 
     path('ticket_completed/<int:id>', views.ticket_completed, name='ticket_completed'),
     path('ticket_approve/<int:id>', views.ticket_approve, name='ticket_approve'),
+    path('ticket_scoping/<int:id>', views.ticket_scoping, name='ticket_scoping'),
     path('ticket_reject/<int:id>', views.ticket_reject, name='ticket_reject'),
     path('ticket_cancelled/<int:id>', views.ticket_cancelled, name='ticket_cancelled'),
     path('email_template/',views.ticket_create, name='email_template'),
