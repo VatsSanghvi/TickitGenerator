@@ -30,26 +30,35 @@
   
   <p><b>Updated at</b><br>{{ ticket.updated_at }}</p>
 
-  {% comment %} do not delete this update button bec its for my testing purpose {% endcomment %}
-  {% comment %} {% if request.user.role == "Admin"%}
-    <a href={% url 'ticket_update' ticket.id %} class="btn btn-primary">update</a>
-  {% endif %} {% endcomment %}
 
+  {% comment %} Admin {% endcomment %}
   {% if request.user.role == "Admin" and ticket.status == "Pending" %}
       <a href={% url 'ticket_approve' ticket.id %} class="btn btn-primary">Approve</a>
       <a href={% url 'ticket_reject' ticket.id %} class="btn btn-danger">Reject</a>
   {% endif %}
 
+
+  {% comment %} Manager {% endcomment %}
   {% if request.user.role == "Manager" and ticket.status == "Assigned" %}
     <a href={% url 'ticket_scoping' ticket.id %} class="btn btn-primary">Scoping</a>
+    <a href={% url 'ticket_cancel' ticket.id %} class="btn btn-warning">Cancel</a>
   {% endif %}
   
   {% if request.user.role == "Manager" and ticket.status == "Scoping" %}
     <a href={% url 'ticket_inprogress' ticket.id %} class="btn btn-primary">In Progress</a>
+    <a href={% url 'ticket_cancel' ticket.id %} class="btn btn-warning">Cancel</a>
+    
   {% endif %}
 
   {% if request.user.role == "Manager" and ticket.status == "In Progress" %}
     <a href={% url 'ticket_completed' ticket.id %} class="btn btn-primary">Completed</a>
+    <a href={% url 'ticket_cancel' ticket.id %} class="btn btn-warning">Cancel</a>
+  {% endif %}
+
+
+  {% comment %} Viewer {% endcomment %}
+  {% if request.user.role == "Viewer" and ticket.created_by == request.user and ticket.status != "Completed" and ticket.status != "Cancelled" %}
+    <a href={% url 'ticket_cancel' ticket.id %} class="btn btn-warning">Cancel</a>
   {% endif %}
     
   <h3>Comment.. </h3>

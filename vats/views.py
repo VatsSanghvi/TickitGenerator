@@ -236,7 +236,7 @@ def ticket_completed(request,id):
 
 @login_required
 @manager_required
-def ticket_cancelled(request,id):
+def ticket_cancel(request,id):
     ticket = Ticket.objects.get(id=id)
     ticket.status = "Cancelled"
     ticket.save()
@@ -288,8 +288,8 @@ def subcategory_delete(request,id):
 #             messages.success(request, 'Your comment for cancellation of ticket has been created successfully.')
 #             return redirect('ticket_list')
 
-    context['form'] = form
-    return render(request, 'vats/worknotes_create.html', context)
+    # context['form'] = form
+    # return render(request, 'vats/worknotes_create.html', context)
 
 def load_subcategories(request):
     category_id = request.GET.get('category')
