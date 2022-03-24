@@ -24,6 +24,7 @@ urlpatterns = [
     path('ticket_reject/<int:id>', views.ticket_reject, name='ticket_reject'),
     path('ticket_cancelled/<int:id>', views.ticket_cancelled, name='ticket_cancelled'),
     path('email_template/',views.ticket_create, name='email_template'),
+    path('status_change_email_template/',views.status_change_email_function, name='tatus_change_email_template'),
     # path('worknotes_create/<int:id>',views.worknotes_create, name='worknotes_create'),
     
     # API

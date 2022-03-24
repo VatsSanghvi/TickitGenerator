@@ -30,6 +30,11 @@
   
   <p><b>Updated at</b><br>{{ ticket.updated_at }}</p>
 
+  {% comment %} do not delete this update button bec its for my testing purpose {% endcomment %}
+  {% comment %} {% if request.user.role == "Admin"%}
+    <a href={% url 'ticket_update' ticket.id %} class="btn btn-primary">update</a>
+  {% endif %} {% endcomment %}
+
   {% if request.user.role == "Admin" and ticket.status == "Pending" %}
       <a href={% url 'ticket_approve' ticket.id %} class="btn btn-primary">Approve</a>
       <a href={% url 'ticket_reject' ticket.id %} class="btn btn-danger">Reject</a>
@@ -50,8 +55,11 @@
   <h3>Comment.. </h3>
   <br>
   <br>
+  {% if  request.user.role == "Manager"%}
   <div class="whatsapp_float">
     <a href={{my_string}}>To chat with customer click here</a>
   </div>
+  {% endif %}
+  
 {% endblock body %}
 {% block js %}{% endblock js %}
