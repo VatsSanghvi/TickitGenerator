@@ -1,7 +1,7 @@
 import imp
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
-from .models import  Ticket, Category, Subcategory
+from .models import  Ticket, Category, Subcategory, Worknote
 from .forms import TicketForm, CategoryForm, TicketUpdateForm, SubcategoryForm, TicketApproveForm, TicketRejectForm
 from registration.models import User
 from django.conf import settings
@@ -73,6 +73,15 @@ def ticket_list_status(request, status):
 @login_required
 def ticket_detail(request, id):
     ticket = Ticket.objects.get(id=id)
+    
+    if request.method == "POST":
+        print("Reached")
+        work_note = Worknote()
+        work_note.ticket = ticket
+        work_note.comment = request.POST['work_note']
+        work_note.commented_by = request.user
+        work_note.save()
+        
     user = User.objects.get(email=ticket.created_by)
     if ticket.created_by == request.user or request.user.role == "Admin" or ticket.assigned_to == request.user  :
         my_string = "https://wa.me/91" + str(ticket.created_by.phone_number)

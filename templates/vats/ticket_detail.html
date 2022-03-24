@@ -73,22 +73,27 @@
   <h3>Comment.. </h3>
   <br>
   <br>
-  <form>
+  <form method="POST">
     {% csrf_token %}
     <table>
       <tr valign="top">
         <div>
           <th style="padding-right:25px;">Work notes</th>
-          <th><textarea name="work_note" class="textarea form-control" style="width:100%" rows="3" cols="160">vats</textarea></th>
+          <th><textarea name="work_note" class="textarea form-control" style="width:100%" rows="3" cols="160" placeholder="Work notes"></textarea></th>
         </div>
       </tr>
     </table>
     <div class="form-group" style="margin: 30px 0px 30px 0px;">
       <button type="submit" class="btn btn-outline-dark float-right">Post</button>
     </div>
-
-    
   </form>
+  <br/>
+  <br/>
+  {% for work_note in ticket.work_note_list %}
+  <p>{{work_note.commented_by}}<br/>
+  {{work_note.comment}}<br/>
+  {{work_note.get_created_at}}</p>
+  {% endfor %}
   {% if  request.user.role == "Manager"%}
   <div class="whatsapp_float">
     <a href={{my_string}}>To chat with customer click here</a>

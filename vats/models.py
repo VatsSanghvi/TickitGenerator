@@ -1,3 +1,4 @@
+from urllib import request
 from django.db import models
 from django.utils.translation import gettext as _
 from django.urls import reverse
@@ -112,20 +113,27 @@ class Ticket(models.Model):
     def get_updated_at(self):
         date = self.updated_at + timedelta(days=0, hours=5, minutes=30)
         return date
-
-# class WorkNote(models.Model):
-
-#     ticket = models.ForeignKey("vats.Ticket",related_name="Worknotes", on_delete=models.CASCADE)
-#     comment = models.TextField(_("Comments"))
-#     commented_by = models.ForeignKey("registration.User", on_delete=models.CASCADE)
-#     created_at = models.DateTimeField(_("Created Date/Time"), auto_now_add=True)
     
-#     class Meta:
-#         verbose_name = _("WorkNote")
-#         verbose_name_plural = _("WorkNotes")
+    def work_note_list(self):
+        return Worknote.objects.filter(ticket=self).order_by('-created_at')
 
-#     def __str__(self):
-#         return str(self.ticket.created_by) + " - " + self.comments
+class Worknote(models.Model):
 
-#     def get_absolute_url(self):
-#         return reverse("WorkNote_detail", kwargs={"id": self.id})
+    ticket = models.ForeignKey("vats.Ticket",related_name="Worknotes", on_delete=models.CASCADE)
+    comment = models.TextField(_("Comments"))
+    commented_by = models.ForeignKey("registration.User", on_delete=models.CASCADE)
+    created_at = models.DateTimeField(_("Created Date/Time"), auto_now_add=True)
+    
+    class Meta:
+        verbose_name = _("Worknote")
+        verbose_name_plural = _("Worknotes")
+
+    def __str__(self):
+        return str(self.ticket.created_by) + " - " + self.comments
+
+    def get_absolute_url(self):
+        return reverse("Worknote_detail", kwargs={"id": self.id})
+    
+    def get_created_at(self):
+        date = self.created_at + timedelta(days=0, hours=5, minutes=30)
+        return date
