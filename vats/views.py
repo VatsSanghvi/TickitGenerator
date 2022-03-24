@@ -1,3 +1,5 @@
+import imp
+from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from .models import  Ticket, Category, Subcategory
 from .forms import TicketForm, CategoryForm, TicketUpdateForm, SubcategoryForm, TicketApproveForm, TicketRejectForm
@@ -6,6 +8,7 @@ from django.conf import settings
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from tickit import settings
+from django.test import Client
 
 from registration.decorators import manager_required, viewer_required, admin_required, viewernotallowed
 from django.contrib.auth.decorators import login_required
@@ -114,11 +117,29 @@ def ticket_reject(request, id):
 
 @login_required
 @manager_required
+def status_change_email_function(request,id):
+    ticket = Ticket.objects.get(id=id)
+    ticket.save()
+    messages.success(request, 'Your tickit status has changed successfully.')
+            
+    html_message = render_to_string('vats/status_change_email_template.html', {'context': ticket})
+    message = EmailMessage('Ticket status updated', html_message, settings.EMAIL_HOST_USER, [ticket.created_by])
+    message.content_subtype = 'html'
+   
+    try:
+        message.send()
+    except Exception as e:
+        print("Error",e)
+    return (redirect('ticket_list'))
+
+
+@login_required
+@manager_required
 def ticket_scoping(request, id):
     ticket = Ticket.objects.get(id=id)
     ticket.status = 'Scoping'
     ticket.save()
-    return redirect('ticket_detail', id)
+    return status_change_email_function(request, id)
 
 @login_required
 @manager_required
@@ -126,7 +147,7 @@ def ticket_inprogress(request, id):
     ticket = Ticket.objects.get(id=id)
     ticket.status = 'In Progress'
     ticket.save()
-    return redirect('ticket_detail', id)
+    return status_change_email_function(request, id)
 
 @login_required
 @viewernotallowed
@@ -211,7 +232,7 @@ def ticket_completed(request,id):
     ticket = Ticket.objects.get(id=id)
     ticket.status = "Completed"
     ticket.save()
-    return redirect('ticket_detail',id)
+    return status_change_email_function(request, id)
 
 @login_required
 @manager_required
