@@ -7,6 +7,15 @@
     bottom:40px;
     right:20px;
   }
+
+  .post_button {
+    text-align: right;
+  }
+  .textarea{
+    background-color: #ffffcc;
+    border-left: 6px solid #ffeb3b;
+    
+  }
 </style>
 {% endblock css %}
 {% block body %}
@@ -64,6 +73,22 @@
   <h3>Comment.. </h3>
   <br>
   <br>
+  <form>
+    {% csrf_token %}
+    <table>
+      <tr valign="top">
+        <div>
+          <th style="padding-right:25px;">Work notes</th>
+          <th><textarea name="work_note" class="textarea form-control" style="width:100%" rows="3" cols="160">vats</textarea></th>
+        </div>
+      </tr>
+    </table>
+    <div class="form-group" style="margin: 30px 0px 30px 0px;">
+      <button type="submit" class="btn btn-outline-dark float-right">Post</button>
+    </div>
+
+    
+  </form>
   {% if  request.user.role == "Manager"%}
   <div class="whatsapp_float">
     <a href={{my_string}}>To chat with customer click here</a>
@@ -72,3 +97,5 @@
   
 {% endblock body %}
 {% block js %}{% endblock js %}
+
+{% comment %} input type = hidden value = comment {% endcomment %}

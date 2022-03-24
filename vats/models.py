@@ -116,7 +116,7 @@ class Ticket(models.Model):
 # class WorkNote(models.Model):
 
 #     ticket = models.ForeignKey("vats.Ticket",related_name="Worknotes", on_delete=models.CASCADE)
-#     comments = models.TextField(_("Comments"))
+#     comment = models.TextField(_("Comments"))
 #     commented_by = models.ForeignKey("registration.User", on_delete=models.CASCADE)
 #     created_at = models.DateTimeField(_("Created Date/Time"), auto_now_add=True)
     
