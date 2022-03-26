@@ -42,6 +42,9 @@ class TicketUpdateForm(forms.ModelForm):
         self.fields['title'].disabled = True
         self.fields['problem_descp'].disabled = True
         self.fields['created_by'].disabled = True
+        self.fields['status'].disabled = True
+        self.fields['assigned_to'].required = True
+        self.fields['priority'].required = True
 
 class CategoryForm(forms.ModelForm):
     

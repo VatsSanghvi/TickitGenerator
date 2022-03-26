@@ -16,6 +16,16 @@
     border-left: 6px solid #ffeb3b;
     
   }
+  .activity-comment {
+    height: max-content;
+    margin: 10px;
+    border-left: 6px solid #ffeb3b;
+  }
+  .activity-field {
+    height: max-content;
+    margin: 10px;
+    border-left: 6px solid #999;
+  }
 </style>
 {% endblock css %}
 {% block body %}
@@ -50,57 +60,79 @@
   {% comment %} Manager {% endcomment %}
   {% if request.user.role == "Manager" and ticket.status == "Assigned" %}
     <a href={% url 'ticket_scoping' ticket.id %} class="btn btn-primary">Scoping</a>
-    <a href={% url 'ticket_cancel' ticket.id %} class="btn btn-warning">Cancel</a>
+    <a href={% url 'ticket_update' ticket.id %} class="btn btn-info">Update</a>
+    <a href={% url 'ticket_cancel' ticket.id %} class="btn btn-danger">Cancel</a>
   {% endif %}
   
   {% if request.user.role == "Manager" and ticket.status == "Scoping" %}
     <a href={% url 'ticket_inprogress' ticket.id %} class="btn btn-primary">In Progress</a>
-    <a href={% url 'ticket_cancel' ticket.id %} class="btn btn-warning">Cancel</a>
+    <a href={% url 'ticket_update' ticket.id %} class="btn btn-info">Update</a>
+    <a href={% url 'ticket_cancel' ticket.id %} class="btn btn-danger">Cancel</a>
     
   {% endif %}
 
   {% if request.user.role == "Manager" and ticket.status == "In Progress" %}
     <a href={% url 'ticket_completed' ticket.id %} class="btn btn-primary">Completed</a>
-    <a href={% url 'ticket_cancel' ticket.id %} class="btn btn-warning">Cancel</a>
+    <a href={% url 'ticket_update' ticket.id %} class="btn btn-info">Update</a>
+    <a href={% url 'ticket_cancel' ticket.id %} class="btn btn-danger">Cancel</a>
   {% endif %}
 
 
   {% comment %} Viewer {% endcomment %}
   {% if request.user.role == "Viewer" and ticket.created_by == request.user and ticket.status != "Completed" and ticket.status != "Cancelled" %}
-    <a href={% url 'ticket_cancel' ticket.id %} class="btn btn-warning">Cancel</a>
+    <a href={% url 'ticket_cancel' ticket.id %} class="btn btn-danger">Cancel</a>
   {% endif %}
-    
-  <h3>Comment.. </h3>
+  
   <br>
   <br>
+  <hr>
   <form method="POST">
     {% csrf_token %}
-    <table>
-      <tr valign="top">
-        <div>
-          <th style="padding-right:25px;">Work notes</th>
-          <th><textarea name="work_note" class="textarea form-control" style="width:100%" rows="3" cols="160" placeholder="Work notes"></textarea></th>
-        </div>
-      </tr>
-    </table>
+    <p><b>Work notes</b></p>
+    <textarea name="work_note" class="textarea form-control" style="width:100%" rows="3" cols="160" placeholder="Work notes"></textarea>
     <div class="form-group" style="margin: 30px 0px 30px 0px;">
       <button type="submit" class="btn btn-outline-dark float-right">Post</button>
     </div>
   </form>
   <br/>
   <br/>
+  <hr>
+  <p><b>Activity:</b><br></p>
+
   {% for work_note in ticket.work_note_list %}
-  <p>{{work_note.commented_by}}<br/>
-  {{work_note.comment}}<br/>
-  {{work_note.get_created_at}}</p>
+    {% if work_note.type == "Comment" %}
+      <div class="form-control activity-comment">
+        <p>
+          <span>{{work_note.commented_by.first_name|capfirst}} {{work_note.commented_by.last_name|capfirst}}</span>
+          <spna style="float: right;">Work notes : {{work_note.get_created_at}}</span>
+        </p>
+        {{work_note.comment}}
+      </div>
+    {% elif work_note.type == "Field" %}
+      <div class="form-control activity-field">
+        <p>
+          <span>{{work_note.commented_by.first_name|capfirst}} {{work_note.commented_by.last_name|capfirst}}</span>
+          <spna style="float: right;">Field changes : {{work_note.get_created_at}}</span>
+        </p>
+        {{work_note.field_name}} &emsp;&emsp; {{work_note.new_value}} was {{work_note.old_value}}
+      </div>
+    {% else %}
+      <div class="form-control activity-field">
+        <p>
+          <span>{{work_note.commented_by.first_name|capfirst}} {{work_note.commented_by.last_name|capfirst}}</span>
+          <spna style="float: right;">Created at : {{work_note.get_created_at}}</span>
+        </p>
+        Ticekt was created.
+      </div>
+    {% endif %}
   {% endfor %}
+
+
   {% if  request.user.role == "Manager"%}
-  <div class="whatsapp_float">
-    <a href={{my_string}}>To chat with customer click here</a>
-  </div>
+    <div class="whatsapp_float">
+      <a href={{my_string}}>To chat with customer click here</a>
+    </div>
   {% endif %}
   
 {% endblock body %}
 {% block js %}{% endblock js %}
-
-{% comment %} input type = hidden value = comment {% endcomment %}

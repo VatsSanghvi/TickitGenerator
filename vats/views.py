@@ -1,3 +1,4 @@
+from dataclasses import field
 import imp
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
@@ -14,6 +15,15 @@ from registration.decorators import manager_required, viewer_required, admin_req
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
+def work_note_update(request, ticket_id, field_name, old_value, new_value):
+    work_note = Worknote()
+    work_note.type = "Field"
+    work_note.commented_by = request.user
+    work_note.ticket = Ticket.objects.get(id=ticket_id)
+    work_note.field_name = field_name
+    work_note.old_value = old_value
+    work_note.new_value = new_value
+    work_note.save()
 
 @login_required
 @viewer_required
@@ -29,6 +39,13 @@ def ticket_create(request):
             ticket.status = "Pending"
             
             ticket.save()
+            
+            work_note = Worknote()
+            work_note.ticket = ticket
+            work_note.type = "Create"
+            work_note.commented_by = request.user
+            work_note.save()
+            
             messages.success(request, 'Your tickit has been created successfully.')
             
             html_message = render_to_string('vats/email_template.html', {'context': ticket})
@@ -80,6 +97,7 @@ def ticket_detail(request, id):
         work_note.ticket = ticket
         work_note.comment = request.POST['work_note']
         work_note.commented_by = request.user
+        work_note.type = "Comment"
         work_note.save()
         
     user = User.objects.get(email=ticket.created_by)
@@ -106,6 +124,11 @@ def ticket_approve(request, id):
             ticket = form.save(commit=False)
             ticket.status = "Assigned"
             ticket.save()
+            
+            work_note_update(request, id, "Status", "Pending", "Assigned")
+            work_note_update(request, id, "Assigned to", "None", ticket.assigned_to.first_name + " " + ticket.assigned_to.last_name)
+            work_note_update(request, id, "Priority", "None", ticket.priority)
+            
             return redirect('ticket_list')
     
     context = {}
@@ -148,6 +171,7 @@ def ticket_scoping(request, id):
     ticket = Ticket.objects.get(id=id)
     ticket.status = 'Scoping'
     ticket.save()
+    work_note_update(request, id, "Status", "Assigned", "Scoping")
     return status_change_email_function(request, id)
 
 @login_required
@@ -156,6 +180,7 @@ def ticket_inprogress(request, id):
     ticket = Ticket.objects.get(id=id)
     ticket.status = 'In Progress'
     ticket.save()
+    work_note_update(request, id, "Status", "Scoping", "In Progress")
     return status_change_email_function(request, id)
 
 @login_required
@@ -163,6 +188,8 @@ def ticket_inprogress(request, id):
 def ticket_update(request, id):
 
     ticket = Ticket.objects.get(id=id)
+    ticket_old_priority = ticket.priority
+    ticket_old_assigned_to = ticket.assigned_to
 
     form = TicketUpdateForm(instance=ticket)
     form.fields["assigned_to"].queryset = User.objects.filter(role='Manager')
@@ -171,24 +198,12 @@ def ticket_update(request, id):
         form = TicketUpdateForm(request.POST, instance=ticket)
         if form.is_valid():
             ticket = form.save()
-            # if ticket.assigned_to != None:
-            #     ticket.status = 'Assigned'
-            # else:
-            #     ticket.status = 'Approval'
-            if request.user.role == "Admin":
-                 if ticket.assigned_to != None:
-                    ticket.status = 'Assigned'
-            
-            if ticket.status == "Completed":
-                html_message = render_to_string('vats/email_template.html', {'context': ticket})
-                message = EmailMessage('Your ticket has been completed successfully', html_message, settings.EMAIL_HOST_USER, [ticket.created_by])
-                message.content_subtype = 'html'
-            try:
-                message.send()
-            except Exception as e:
-                print("Error",e)
-
             ticket.save()
+            
+            if ticket_old_priority !=ticket.priority:
+                work_note_update(request, id, "Priority", ticket_old_priority, ticket.priority)
+            if ticket_old_assigned_to.email != ticket.assigned_to.email:
+                work_note_update(request, id, "Assigned to", ticket_old_assigned_to.first_name + " " + ticket_old_assigned_to.last_name, ticket.assigned_to.first_name + " " + ticket.assigned_to.last_name)
             
             return redirect('ticket_list')
     
@@ -204,7 +219,28 @@ def ticket_delete(request, id):
     ticket.delete()
     return redirect('ticket_list')
 
+@login_required
+@manager_required
+def ticket_completed(request,id):
+    ticket = Ticket.objects.get(id=id)
+    ticket.status = "Completed"
+    ticket.save()
+    work_note_update(request, id, "Status", "In Progress", "Completed")
+    return status_change_email_function(request, id)
 
+@login_required
+@manager_required
+def ticket_cancel(request,id):
+    ticket = Ticket.objects.get(id=id)
+    ticket_old_status = ticket.status
+    ticket.status = "Cancelled"
+    ticket.save()
+    work_note_update(request, id, "Status", ticket_old_status, "Cancelled")
+    return redirect('ticket_detail',id)
+
+
+
+##########################################################  CATEGORY VIEWS  ##########################################################
 @login_required
 @admin_required
 def category_create(request):
@@ -235,51 +271,43 @@ def category_delete(request, id):
     category.delete()
     return redirect('category_list')
 
-@login_required
-@manager_required
-def ticket_completed(request,id):
-    ticket = Ticket.objects.get(id=id)
-    ticket.status = "Completed"
-    ticket.save()
-    return status_change_email_function(request, id)
-
-@login_required
-@manager_required
-def ticket_cancel(request,id):
-    ticket = Ticket.objects.get(id=id)
-    ticket.status = "Cancelled"
-    ticket.save()
-    return redirect('ticket_detail',id)
-
+######################################################### SUBCATEGORY VIEWS  #########################################################
 @login_required
 @admin_required
-def subcategory_create(request):
+def subcategory_create(request, id):
     context = {}
+    category = Category.objects.get(id=id)
     form = SubcategoryForm()
+    form.fields['category'].initial = id
 
     if request.method == "POST":
         form = SubcategoryForm(request.POST)
         if form.is_valid():
             form.save()                     
-            messages.success(request, 'Your Category has been created successfully.')
-            return redirect('subcategory_list')
+            messages.success(request, 'Your Subategory has been created successfully.')
+            return redirect('subcategory_list', id)
 
     context['form'] = form
     return render(request, 'vats/subcategory_create.html', context)
 
 @login_required
 @admin_required
-def subcategory_list(request):
+def subcategory_list(request, id):
     context = {}
-    context['subcategories'] = Subcategory.objects.all()
+    category = Category.objects.get(id=id)
+    context['category'] = category
+    context['subcategories'] = Subcategory.objects.filter(category=category)
     return render(request, 'vats/subcategory_list.html', context)
 
 @login_required
 @admin_required
-def subcategory_delete(request,id):
+def subcategory_delete(request, id):
     subcategory = Subcategory.objects.get(id=id)
     subcategory.delete()
     return redirect('subcategory_list')
+
+
+
 
 # @login_required
 # @manager_required

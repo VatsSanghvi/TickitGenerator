@@ -8,13 +8,6 @@ urlpatterns = [
     path('ticket_update/<int:id>', views.ticket_update, name='ticket_update'),
     path('ticket_delete/<int:id>', views.ticket_delete, name='ticket_delete'),
     path('ticket_detail/<int:id>', views.ticket_detail, name='ticket_detail'),
-    path('category_create/', views.category_create, name='category_create'),
-    path('category_list/', views.category_list, name='category_list'),
-    path('category_delete/<int:id>', views.category_delete, name='category_delete'),
-
-    path('subcategory_create/<int:id>', views.subcategory_create, name='subcategory_create'),
-    path('subcategory_list/<int:id>', views.subcategory_list, name='subcategory_list'),
-    path('subcategory_delete/<int:id>', views.subcategory_delete, name='subcategory_delete'),
 
     path('ticket_approve/<int:id>', views.ticket_approve, name='ticket_approve'),
     path('ticket_scoping/<int:id>', views.ticket_scoping, name='ticket_scoping'),
@@ -25,6 +18,16 @@ urlpatterns = [
     path('email_template/',views.ticket_create, name='email_template'),
     path('status_change_email_template/',views.status_change_email_function, name='tatus_change_email_template'),
     # path('worknotes_create/<int:id>',views.worknotes_create, name='worknotes_create'),
+    
+    # CATEGORY URLS
+    path('category_create/', views.category_create, name='category_create'),
+    path('category_list/', views.category_list, name='category_list'),
+    path('category_delete/<int:id>', views.category_delete, name='category_delete'),
+
+    # SUBCATEGORY URLS
+    path('subcategory_create/<int:id>', views.subcategory_create, name='subcategory_create'),
+    path('subcategory_list/<int:id>', views.subcategory_list, name='subcategory_list'),
+    path('subcategory_delete/<int:id>', views.subcategory_delete, name='subcategory_delete'),
     
     # API
     path('ajax/load-subcategories/', views.load_subcategories, name='ajax_load_subcategories'),

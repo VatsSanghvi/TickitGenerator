@@ -1,5 +1,6 @@
 from urllib import request
 from django.db import models
+from django.forms import Textarea
 from django.utils.translation import gettext as _
 from django.urls import reverse
 from datetime import timedelta
@@ -118,18 +119,27 @@ class Ticket(models.Model):
         return Worknote.objects.filter(ticket=self).order_by('-created_at')
 
 class Worknote(models.Model):
+    type_choice = (
+        ("Create","Create"),
+        ("Comment","Comment"),
+        ("Field","Field"),
+    )
 
     ticket = models.ForeignKey("vats.Ticket",related_name="Worknotes", on_delete=models.CASCADE)
+    type = models.CharField(_("Type"), max_length=50, blank=True, null=True, choices=type_choice)
     comment = models.TextField(_("Comments"))
     commented_by = models.ForeignKey("registration.User", on_delete=models.CASCADE)
     created_at = models.DateTimeField(_("Created Date/Time"), auto_now_add=True)
+    field_name = models.CharField(_("Field name"), max_length=40, blank=True, null=True)
+    old_value = models.CharField(_("Old value"), max_length=40, blank=True, null=True)
+    new_value = models.CharField(_("new value"), max_length=40, blank=True, null=True)
     
     class Meta:
         verbose_name = _("Worknote")
         verbose_name_plural = _("Worknotes")
 
     def __str__(self):
-        return str(self.ticket.created_by) + " - " + self.comments
+        return str(self.ticket.created_by) + " - " + self.type
 
     def get_absolute_url(self):
         return reverse("Worknote_detail", kwargs={"id": self.id})
