@@ -1,4 +1,5 @@
 from dataclasses import field
+from django.urls import reverse
 import imp
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
@@ -11,7 +12,7 @@ from django.template.loader import render_to_string
 from tickit import settings
 from django.test import Client
 
-from registration.decorators import manager_required, viewer_required, admin_required, viewernotallowed
+from registration.decorators import adminnotallowed, manager_required, viewer_required, admin_required, viewernotallowed
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
@@ -136,16 +137,32 @@ def ticket_approve(request, id):
     context['update_type'] = "Assign"
     return render(request, "vats/ticket_update.html", context)
 
+# @login_required
+# @admin_required
+# def ticket_reject(request, id):
+#     ticket = Ticket.objects.get(id=id)
+#     # form = TicketRejectForm(instance=ticket)
+#     ticket.status == "Rejected"
+#     ticket.save()
+#     # context = {}
+#     # context['form'] = form
+#     # context['update_type'] = "Reject"
+#     messages.success(request, 'Ticket rejected successfully.')
+            
+#     # html_message = render_to_string('vats/email_template.html')
+#     message = EmailMessage('Your tickit has been rejected due to lack of information. Kindly provide more information in detail if your problem is still not', request.user.email, ticket.created_by)
+#     message.content_subtype = 'html'
+#     return render(request, "vats/ticket_list.html")
+
 @login_required
 @admin_required
-def ticket_reject(request, id):
+def ticket_reject(request,id):  
     ticket = Ticket.objects.get(id=id)
-    form = TicketRejectForm(instance=ticket)
-    
-    context = {}
-    context['form'] = form
-    context['update_type'] = "Reject"
-    return render(request, "vats/ticket_update.html", context)
+    ticket.status = "Rejected"
+    ticket.save()
+    messages.success(request, 'Ticket rejected successfully.')
+        
+    return redirect("ticket_detail",id)
 
 @login_required
 @manager_required
@@ -229,7 +246,7 @@ def ticket_completed(request,id):
     return status_change_email_function(request, id)
 
 @login_required
-@manager_required
+@adminnotallowed
 def ticket_cancel(request,id):
     ticket = Ticket.objects.get(id=id)
     ticket_old_status = ticket.status

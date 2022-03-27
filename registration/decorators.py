@@ -58,6 +58,18 @@ def viewernotallowed(my_function):
             return redirect('home')
     return wrapper
 
+def adminnotallowed(my_function):
+    def wrapper(request, *args, **kwargs):
+        print(kwargs)
+        ticket = Ticket.objects.get(id=kwargs['id'])
+        if request.user.role == "Viewer" or ticket.assigned_to.id == request.user.id:
+            return my_function(request, *args, **kwargs)
+        else:
+            messages.warning(request, 'You are not allowed to access this page.')
+            return redirect('home')
+    return wrapper
+
+
 def my_user_details(my_function):
     def wrapper(request, *args, **kwargs):
         # ticket = Ticket.objects.get(id=kwargs['id'])
