@@ -88,18 +88,18 @@ class Ticket(models.Model):
                 str_zeros += "0"
             self.number = "TKT" + str_zeros + str(number)
             
-        # account_sid = 'ACcad8c9cd24dc3fa5b6c96ce3cb9cee56'
-        # auth_token = 'e43dbe58d768be26b75f9321aae75420'
-        # client = Client(account_sid, auth_token)
+        account_sid = 'ACcad8c9cd24dc3fa5b6c96ce3cb9cee56'
+        auth_token = '1bb0c327292e9e75bce2683817d65b51'
+        client = Client(account_sid, auth_token)
 
-        # message = client.messages.create(
-        #                             body='Hello, Your Ticket has been generated kindly check it in your portal',
-        #                             from_='+17752567143',
-        #                             # to=str(self.created_by.phone_number)
-        #                             to='+917048850488'
-        #                         )
+        message = client.messages \
+            .create(
+                body='Your ticket has been generated and the details has been mailed to you.',
+                from_='+17752567143',
+                to='+917048850488'
+            )
 
-        # print(message.sid)
+        print(message.sid)
         return super(Ticket, self).save(*args, **kwargs)
     
     def is_open(self):
